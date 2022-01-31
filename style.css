@@ -65,6 +65,7 @@ body{
     background: transparent;
     box-shadow: none;
 
+
 }
 .menu-btn.open .menu-btn-burger::before{
     transform: rotate(45deg) translate(35px,-35px);
