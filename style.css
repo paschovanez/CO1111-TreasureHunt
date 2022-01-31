@@ -1,0 +1,85 @@
+
+ .aaa{
+     display: inline;
+ }
+body{
+    background-color: darkgray;
+    justify-content: center;
+    align-items: center;
+    display: inline-block;
+    padding:10px;
+}
+
+.menu-btn{
+
+    /*background-color: black;*/
+    /*position: relative;*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+    height: 80px;
+    cursor: pointer;
+    transition: all .5s ease-in-out;
+    border: 3px solid #fff;
+
+
+}
+
+.menu-btn-burger{
+    position: absolute;
+    width: 50px;
+    height: 6px;
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(255,101,47,.2);
+    transition: all .5s ease-in-out;
+
+
+}
+
+.menu-btn-burger::before,
+.menu-btn-burger::after{
+    content: '';
+    position: absolute;
+    width: 50px;
+    height: 6px;
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(255,101,47,.2);
+    transition: all .5s ease-in-out;
+
+}
+
+.menu-btn-burger::before{
+    transform: translateY(-20px);
+}
+.menu-btn-burger::after{
+    transform: translateY(20px);
+}
+
+/* Animation */
+.menu-btn.open .menu-btn-burger{
+    align-items: center;
+    transform: translateX(-50px);
+    background: transparent;
+    box-shadow: none;
+
+}
+.menu-btn.open .menu-btn-burger::before{
+    transform: rotate(45deg) translate(35px,-35px);
+}
+.menu-btn.open .menu-btn-burger::after{
+    transform: rotate(-45deg) translate(35px,35px);
+}
+a.home, a.news,a.contact,a.about{
+    color: white;
+    left: 0;
+    padding: 25px ;
+    text-decoration: none;
+    font-size: 17px;
+    display: block;
+}
+#Links{
+    display: none;
+}
