@@ -12,15 +12,50 @@ body{
     overflow: hidden;
 
 }
+
 /* Navigation */
 nav{
     height: 6rem;
     width: 100vw;
     display: flex;
-    position: fixed;
+    float: top;
+    /*position: fixed;*/
+    /* stops floating items from moving behind it*/
+    clear-side: auto;
     z-index: 10;
     background-color: #053742;
     box-shadow: 0 3px 20px rgba(0,0,0,0.2);
+}
+
+/* Content */
+#content
+{
+    /* Positioning */
+    /*float: top;*/
+    clear-side: both;
+    position: center;
+    /* Sizing */
+    height: 95%;
+    width: 90%;
+
+    margin: auto;
+    padding: 2.5vw;
+    /* Colors */
+    background-color: darkred;
+}
+
+/* Members */
+#members
+{
+    margin: inherit;
+    padding: 15px;
+}
+
+/* Description */
+#description
+{
+    margin: inherit;
+    padding: 15px;
 }
 
 /* Styling Logo*/
@@ -172,6 +207,11 @@ nav{
 /*SOCIAL MEDIA*/
 /* Style the links inside the sidenav*/
 #MysideMedia a {
+    /*
+        Ensures its always on top of other content and isnt covered (the items with a higher index number covers the items with a smaller number)
+    */
+    z-index: 5;
+
     position: absolute; /* Position them relative to the browser window*/
     left: -100px; /* Position them outside of the screen*/
     transition: 0.3s; /* Add transition on hover*/
@@ -218,7 +258,29 @@ nav{
     text-decoration: none;
 }
  footer {
+     /*
+        Sticky makes no sense since they will need to stay at the bottom,
+        we dont need to actually stay on screen the entire time.
      position: sticky;
+     */
+
+     /*
+        Fixed position forces it to be in an unwanted spot
      position: fixed;
-     bottom: 50%;
+     */
+
+
+
+     /* Positioning */
+     float: bottom;
+     clear-side: both;
+     bottom: 0%;
+
+     /* Sizing */
+     height: 95%;
+     width: 100%;
+     padding: 1vw;
+
+     /* Colors */
+     background-color: green;
  }
