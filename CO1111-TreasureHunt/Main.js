@@ -1,7 +1,3 @@
-
-
-
-
 /* Navigation open the bars */
 function SOCIAL(){
     const hamburger = document.querySelector(".hamburger");
