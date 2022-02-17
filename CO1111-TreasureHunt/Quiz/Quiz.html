@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <script src="../Main.js"></script>
+        <title>Treasure Hunt Web App</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <!-- loading the social media icons from  -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico"><!-- favicon -->
+        <link rel="stylesheet" href="../Main.css" >
+    </head>
+
+    <body>
+    <nav>
+        <div class="logo">
+            <a href="../Home/index.html">
+                <img src="../images/favicon.png" alt="Logo Image">
+            </a>
+        </div>
+
+        <div class="hamburger">
+            <div class="bars1"></div>
+            <div class="bars2"></div>
+            <div class="bars3"></div>
+        </div>
+
+        <ul class="links">
+            <li><a href="../Leaderboard/leaderboard.html">Leaderboard</a></li>
+            <li><a href="Quiz.html">Quiz</a></li>
+            <li><a href="../Testing/testing.html">Test</a></li>
+            <li><a href="#">Contact Us</a></li>
+        </ul>
+    </nav>
+    <script>SOCIAL() </script>
+
+    <main>
+        <!-- Title of what is being presented on the Page during a given time -->
+        <!-- i.e. List of Quizzes, Title of quiz being played, etc. -->
+        <div id="Title">
+
+        </div>
+
+        <!--
+            Actual Content to be presented at a given time, i.e.:
+            - List of Available Quizzes
+            - Question / Answers
+            - etc.
+            Which will be dynamically created when reading content from the API upon request.
+        -->
+        <div id="QuizContent">
+
+            <!-- Empty Placeholder Content for initialization when loading content -->
+
+            <div id="ListOfQuizes"></div>
+
+            <h1 id="Question"></h1>
+
+            <div id="Answers"></div>
+
+        </div>
+
+    </main>
+
+
+
+    <footer>
+
+    </footer>
+
+    </body>
+</html>
