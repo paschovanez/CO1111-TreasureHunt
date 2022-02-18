@@ -422,6 +422,7 @@ function switchToQuiz(selectedQuiz)
 
             // Load / Create Quiz
             //fetchQuiz(sessions[q].uuid);
+            //updateQuizUI();
 
 
             // Create Placeholder Quiz
