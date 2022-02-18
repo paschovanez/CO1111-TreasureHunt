@@ -72,7 +72,7 @@ nav{
 }
 
 /* Content */
-#content
+.content
 {
     /* Positioning */
     /*float: top;*/
@@ -82,7 +82,7 @@ nav{
     height: 95%;
     width: 90%;
     margin: auto;
-    padding: 2.5vw;
+    padding: 1vw 2.5vw;
     /* Colors */
     background-color: darkred;
 }

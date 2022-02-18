@@ -1,0 +1,186 @@
+/* Global Content */
+.Divider
+{
+    /*Spacing*/
+    margin: 1vw 0.5vw;
+    /*Borders*/
+    border-bottom: 3px solid black;
+    /*border-radius: 5px;*/
+}
+
+/* ----- Title ----- */
+#ContentTitle
+{
+    /*Positioning*/
+    position: center;
+    clear: both;
+    /*Spacing*/
+    margin: 0 1vw;
+    padding: 1vw;
+    /*Borders*/
+    border-bottom: 3px solid black;
+    /*border-radius: 5px;*/
+    /*Text*/
+    text-align: center;
+}
+
+/* ----- Quiz Content ----- */
+#QuizContent
+{
+    /*Positioning*/
+    clear: both;
+    /*Spacing*/
+    margin: 0 1vw;
+    padding: 0 1vw;
+}
+
+/* ----- Loading Indicator ----- */
+#LoadingIndicator
+{
+
+}
+
+/* ----- List of Sessions ----- */
+/*Container*/
+#ListOfQuizzes
+{
+    /*Positioning*/
+    clear: both;
+    /*Spacing*/
+    padding: 1vw;
+    /*Text*/
+    text-align: center;
+}
+#ListOfQuizzes ul
+{
+    /*Styling*/
+    list-style-type: none;
+}
+#ListOfQuizzes p
+{
+    /*Spacing*/
+    margin: 0.2vw;
+}
+#ListOfQuizzes b
+{
+    /*Text*/
+    font-size: larger;
+}
+/*Elements*/
+#ListOfQuizzes li
+{
+    /*Positioning*/
+    position: center;
+    clear: both;
+    /*Spacing*/
+    margin: 0 1vw;
+    padding: 1vw;
+    /*Borders*/
+    border: 3px solid grey;
+    border-radius: 5px;
+}
+#ListOfQuizzes li button
+{
+    /*Spacing*/
+    margin: 0.25vw;
+    padding: 0.5vw;
+    width: 40%;
+    /*Border*/
+    border-radius: 4px;
+    /*Text*/
+    color: black;
+}
+#ListOfQuizzes li button:hover
+{
+    /*Styling*/
+    background-color: silver;
+}
+
+/* ----- Questions ----- */
+#Question
+{
+    /*Positioning*/
+    position: center;
+    clear: both;
+    /*Spacing*/
+    padding: 0 1vw 1vw 0;
+    /*Text*/
+    text-align: center;
+}
+
+/* ----- Answers ----- */
+#Answers
+{
+    /*Positioning*/
+    clear: both;
+    /*Spacing*/
+    padding: 0 1vw;
+    /*Text*/
+    text-align: center;
+}
+#Answers ul
+{
+    /*Styling*/
+    list-style-type: none;
+}
+#Answers li button
+{
+    /*Spacing*/
+    margin: 0.15vw 0;
+    padding: 0.5vw;
+    width: 40%;
+    /*Border*/
+    border-radius: 4px;
+    /*Text*/
+    color: black;
+}
+#Answers li button p
+{
+    /*Text*/
+    color: black;
+}
+#Answers li button:hover
+{
+    /*Styling*/
+    background-color: silver;
+}
+
+/* ----- Buttons ----- */
+#Buttons
+{
+    /*Spacing*/
+    padding: 1vw;
+}
+#Buttons button
+{
+    /*Spacing*/
+    padding: 0.5vw;
+    width: 20%;
+    /*Border*/
+    border-radius: 4px;
+    /*Text*/
+    color: black;
+}
+#Buttons button:hover
+{
+    /*Styling*/
+    background-color: silver;
+}
+#Buttons #QuestionSkip
+{
+    /*Positioning*/
+    position: relative;
+    left: 60%;
+}
+#Buttons #LeaderBoard
+{
+    /*Positioning*/
+    position: relative;
+    /*Text*/
+    color: inherit;
+}
+#Buttons #LeaderBoard:hover a
+{
+    /*Text*/
+    text-decoration: none;
+}
