@@ -179,6 +179,12 @@
     /*Text*/
     color: inherit;
 }
+#Buttons #LeaderBoard a
+{
+    /*Text*/
+    text-decoration: none;
+    color: black;
+}
 #Buttons #LeaderBoard:hover a
 {
     /*Text*/
