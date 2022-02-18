@@ -103,7 +103,7 @@
     position: center;
     clear: both;
     /*Spacing*/
-    padding: 0 1vw 1vw 0;
+    padding-bottom: 1vw;
     /*Text*/
     text-align: center;
 }
