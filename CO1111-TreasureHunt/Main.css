@@ -70,6 +70,7 @@ nav{
 .links li a:hover::before{
     width: 80%;
 }
+/* Main */
 
 /* Content */
 .content
@@ -82,7 +83,7 @@ nav{
     height: 95%;
     width: 90%;
     margin: auto;
-    padding: 1vw 2.5vw;
+    padding: 7.5vw 2.5vw;
     /* Colors */
     background-color: darkred;
 }
