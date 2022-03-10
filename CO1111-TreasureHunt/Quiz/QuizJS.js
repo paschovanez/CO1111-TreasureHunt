@@ -13,8 +13,17 @@ let numOfQuestions;
 let currentQuestion;
 let answerLetters = ['A', 'B', 'C', 'D'];
 let answerIDs = ['answerA', 'answerB' , 'answerC' , 'answerD'];
+let playerName;
+const appName = "Team1";
 
-
+/* Global HTML variables */
+const ContentTitle = document.getElementById("ContentTitle");
+const QuizContent = document.getElementById("QuizContent");
+const LoadingIndicator = document.getElementById("LoadingIndicator");
+const ListOfQuizzes = document.getElementById("ListOfQuizzes");
+const Question = document.getElementById("Question");
+const Answers = document.getElementById("Answers");
+const MiscButtons = document.getElementById("Buttons");
 
 
 /*
@@ -47,9 +56,6 @@ function initialize()
     // Log for Debug
     console.log("Initializing Page")
 
-    //
-    //clearScreen();
-
     /*let initCase = 0;
     switch(initCase)
     {
@@ -72,9 +78,6 @@ function initialize()
 
     // Request currently available sessions
     fetchSessions();
-
-    // Updates the Questions and Answers
-    //updateSessionUI();
 }
 
 
@@ -94,85 +97,24 @@ async function fetchSessions()
 {
     console.log("Fetch Sessions: ");
 
-    /* Attempt 1 */
-    /*// Create Request
-    let httpRequest = new XMLHttpRequest();
-
-    // Whilst loading
-    httpRequest.onload = function()
-    {
-        // Reply of Request in plain Text
-        //console.log(this.responseText);
-
-        // Convert response from API to JSON object
-        sessions = JSON.parse(this.responseText);
-        console.log("Attempt 1: " +  sessions);
-    }
-
-    // Result of request
-    httpRequest.onreadystatechange = function ()
-    {
-        // Log status of request at each stage
-        //console.log(this.response + " -> " + this.readyState);
-    }
-
-
-    // Set the link to the specified URL
-    httpRequest.open("GET", "https://codecyprus.org/th/api/list", true);
-
-    // Send request
-    httpRequest.send();
-
-    return JSON.parse(this.responseText);*/
-
-    /* Attempt 2 */
-    /*fetch("https://codecyprus.org/th/api/list").
-    then(response => response.json()).
-    then(jsonObject =>
-    {
-      let treasureHuntsArray = jsonObject.treasureHunts;
-
-      console.log(treasureHuntsArray);
-
-      //return treasureHuntsArray;
-        updateSessionUI(treasureHuntsArray);
-    } );*/
-
-    /* Attempt 3 */
-    /*const response = await fetch('https://codecyprus.org/th/api/list');
-    const reply = await response.text();
-    // process the reply
-     sessions = JSON.parse(reply);
-     console.log("fetch: " + sessions)*/
-
-    /* Attempt 4 */
-    /*const response = await fetch('https://codecyprus.org/th/api/list').
-    then(response => response.text()).
-    then(text => document.getElementById('myDiv').innerText = json.treasureHunts[0].name);
-
-    console.log("Testing Fetch: " + response);*/
-
-    /* Attempt 5 */
-    /*const response = await fetch("https://codecyprus.org/th/api/list")
-        .then((result) => {return result.json();} )
-        .then((data) => {console.log(data);} );
-    const reply = await response.text();
-    console.log("Reply: " + reply);*/
-
-    /* Attempt 6 - Lecture */
-
     /*   Fetch   */
     const response = await fetch("https://codecyprus.org/th/api/list")
         .then(response => response.json() /* Convert it from JSON */)
             .then(json => {sessions = json.treasureHunts /* Save in Variable Array */});
 
-    //const reply = await response.text();
-    //document.getElementById("myDiv").innerText = reply;
-    //sessions = reply;
-    //document.getElementById("myDiv").innerText = sessions[0].name;
-
-    console.log("JSON Response: ", sessions[0].name);
-
+    //Print Sessions available for debug
+    if(sessions !== 0)
+    {
+        console.log("JSON Responded with available sessions: ");
+        for(let l = 0; l < sessions.length; l++)
+        {
+            console.log(sessions[l].name);
+        }
+    }
+    else
+    {
+        console.log("Sessions array is empty");
+    }
 
 
 
@@ -180,26 +122,21 @@ async function fetchSessions()
 
 
 
-
     /*
         Update Title
     */
-    let title = document.getElementById('ContentTitle');
-    title.innerHTML = "<h1>Available Sessions </h1>";
+    ContentTitle.innerHTML = "<h1>Available Sessions </h1>";
 
     /*
         Update Loading Indicator
     */
-    document.getElementById('LoadingIndicator').innerText = "";
+    LoadingIndicator.innerText = "";
 
     /*
         Update List
     */
     // Class assigned to div
     let sessionID = "availableSession";
-
-
-
 
     // Start List to store each Session Element
     let sessionListElements = "<ul>";
@@ -209,7 +146,7 @@ async function fetchSessions()
     {
         /* Create Items to populate list of Sessions with */
 
-        //Value of Button
+        //Function Value of Button
         let noSpaces = "\"" + sessions[s].name.split(" ").join("") + "\"";
 
         // Session Element
@@ -218,192 +155,43 @@ async function fetchSessions()
                 "<div class =" + sessionID + ">" +
                     "<p>" +  "<b>" + sessions[s].name + "</b>" + "</p>" +
                     "<p>" + "<i>" +sessions[s].description + "</i>" + "</p>" +
-                    "<button onclick=" + "'switchToQuiz(" + noSpaces + ");'" + ">" + "Join Game" + "</button>" +
+                    //Move on to begin playing
+                    "<button onclick=" + "'getPlayerDetails(" + noSpaces + ");'" + ">" + "Join Game" + "</button>" +
                 "</div>" +
             "</li>";
-
-        // This method doesn't work
-        /*
-        // Create element to store inside of
-        const div = document.createElement("div");
-        // Assign Class to element
-        div.id = sessionID + s;
-
-        // Create Name of Session to be displayed
-        const name = document.createElement("p");
-        name.textContent = sessions[s].name;
-
-        // Create Description of Session to be displayed
-        const description = document.createElement("p");
-        description.textContent = sessions[s].description;
-
-        // Create Button leading to Session
-        const button = document.createElement("button");
-        button.id = sessions[s].uuid;
-        button.textContent = "Join Game";
-
-
-        /!* Populate List with Items within Page to be displayed *!/
-
-        // Place Div
-        document.querySelector("main").
-        querySelector(document.getElementById("QuizContent")).
-        querySelector(document.getElementById("ListOfQuizzes")).
-        append(div);
-
-        // Place Session name into Div
-        document.querySelector("main").
-        querySelector(document.getElementById("QuizContent")).
-        querySelector(document.getElementById("ListOfQuizzes")).
-        querySelector(document.getElementById("availableSession" + s)).
-        append(name);
-
-        // Place Session Description into Div
-        document.querySelector("main").
-        querySelector(document.getElementById("QuizContent")).
-        querySelector(document.getElementById("ListOfQuizzes")).
-        querySelector(document.getElementById("availableSession" + s)).
-        append(description);
-
-        // Place Session Start Button into Div
-        document.querySelector("main").
-        querySelector(document.getElementById("QuizContent")).
-        querySelector(document.getElementById("ListOfQuizzes")).
-        querySelector(document.getElementById("availableSession" + s)).
-        append(button);*/
-
-
-        // This method doesn't work
-        /*document.getElementById("ListOfQuizzes").innerHTML =
-            <div class="availableSession">
-                <p> <b>session.name</b> </p>
-                <p> session.description </p>
-                <button value = session.uuid> Join Game </button>
-            </div>;*/
     }
 
     // Close off List
     sessionListElements += "</ul>";
 
     // Add list into HTML element
-    document.getElementById("ListOfQuizzes").innerHTML = sessionListElements;
-    document.getElementById("ListOfQuizzes").innerHTML += "<div class='Divider'></div>";
-
+    ListOfQuizzes.innerHTML = sessionListElements;
+    ListOfQuizzes.innerHTML += "<div class='Divider'></div>";
 }
 
-/* Update List of all available Sessions */
-function updateSessionUI()
+
+
+/*
+    *
+    *
+    *
+    * Load Quiz
+    *
+    *
+    *
+*/
+
+function getPlayerDetails(selectedQuiz)
 {
+    //Input name
 
-    console.log("Update UI: ");
+    //  &app= ???
 
-    console.log("DEBUG: " + sessions[0].name);
-
-
-    /*
-        Update Title
-    */
-    let title = document.getElementById('ContentTitle');
-    title.innerHTML = "Available Sessions";
-
-    /*
-        Update List
-    */
-    // Class assigned to div
-    let sessionID = "availableSession";
-
-
-
-
-    // Start List to store each Session Element
-    let sessionListElements = "<ul>";
-
-    // Update List of Available Quiz Sessions
-    for(let s = 0; s < sessions.length; s++)
-    {
-        /* Create Items to populate list of Sessions with */
-
-        sessionListElements +=
-        "<li>" +
-            "<div class =" + sessionID + ">" +
-                "<p>" +  "<b>" + sessions[s].name + "</b>" + "</p>" +
-                "<p>" + sessions[s].description + "</p>" +
-                "<button value =" + sessions[s].uuid + ">" + "Join Game" + "</button>" +
-            "</div>" +
-        "</li>";
-
-
-
-
-        // This method doesn't work
-        /*
-        // Create element to store inside of
-        const div = document.createElement("div");
-        // Assign Class to element
-        div.id = sessionID + s;
-
-        // Create Name of Session to be displayed
-        const name = document.createElement("p");
-        name.textContent = sessions[s].name;
-
-        // Create Description of Session to be displayed
-        const description = document.createElement("p");
-        description.textContent = sessions[s].description;
-
-        // Create Button leading to Session
-        const button = document.createElement("button");
-        button.id = sessions[s].uuid;
-        button.textContent = "Join Game";
-
-
-        /!* Populate List with Items within Page to be displayed *!/
-
-        // Place Div
-        document.querySelector("main").
-        querySelector(document.getElementById("QuizContent")).
-        querySelector(document.getElementById("ListOfQuizzes")).
-        append(div);
-
-        // Place Session name into Div
-        document.querySelector("main").
-        querySelector(document.getElementById("QuizContent")).
-        querySelector(document.getElementById("ListOfQuizzes")).
-        querySelector(document.getElementById("availableSession" + s)).
-        append(name);
-
-        // Place Session Description into Div
-        document.querySelector("main").
-        querySelector(document.getElementById("QuizContent")).
-        querySelector(document.getElementById("ListOfQuizzes")).
-        querySelector(document.getElementById("availableSession" + s)).
-        append(description);
-
-        // Place Session Start Button into Div
-        document.querySelector("main").
-        querySelector(document.getElementById("QuizContent")).
-        querySelector(document.getElementById("ListOfQuizzes")).
-        querySelector(document.getElementById("availableSession" + s)).
-        append(button);*/
-
-
-        // This method doesn't work
-        /*document.getElementById("ListOfQuizzes").innerHTML =
-            <div class="availableSession">
-                <p> <b>session.name</b> </p>
-                <p> session.description </p>
-                <button value = session.uuid> Join Game </button>
-            </div>;*/
-    }
-
-    // Close off List
-    sessionListElements += "</ul>";
-
-    // Add list into HTML element
-    document.getElementById("ListOfQuizzes").innerHTML = sessionListElements;
+    switchToQuiz(selectedQuiz, playerName);
 }
 
 /* Switch from list of Sessions to Quiz */
-function switchToQuiz(selectedQuiz)
+function switchToQuiz(selectedQuiz, playerName)
 {
     for(let q = 0; q < sessions.length; q++)
     {
@@ -412,29 +200,28 @@ function switchToQuiz(selectedQuiz)
         {
             // Print name for debugging
             console.log("You selected this Session: " + sessions[q].name);
+            currentQuiz = sessions[q].uuid;
 
             /*
                 Switch to appropriate quiz
             */
 
-            // Delete Everything on Screen
-            //clearScreen();
-
             // Load / Create Quiz
-            //fetchQuiz(sessions[q].uuid);
-            //updateQuizUI();
+            //fetchQuiz(currentQuiz);
+            updateQuizUI();
 
 
             // Create Placeholder Quiz
             /* document.getElementById("").innerHTML =  "<> sessions[q]. </>"*/
 
             // Title
-            document.getElementById("ContentTitle").innerHTML =  "<h1>" + sessions[q].name + "</h1>"
+            ContentTitle.innerHTML =  "<h1>" + sessions[q].name + "</h1>"
             // List of Quizzes
-            document.getElementById("ListOfQuizzes").innerHTML =  "";
+            ListOfQuizzes.innerHTML =  "";
             // Question
-            document.getElementById("Question").innerHTML +=  "<p> Sample Question for: " + sessions[q].name +  "</p>";
-            document.getElementById("Question").innerHTML +=  "<div class='Divider'></div>";
+            Question.innerHTML +=  "<p> Sample Question for: " + sessions[q].name +  "</p>";
+            Question.innerHTML +=  "<div class='Divider'></div>";
+
             // Answers
             let answerElements = "<ul>";
             for(let a = 0; a < 4 /*NumOfQuestions.length*/; a++)
@@ -442,13 +229,13 @@ function switchToQuiz(selectedQuiz)
                 answerElements += "<li><button> <p id=" + answerIDs[a] + "> Possible Answer" + " " + answerLetters[a]  + "</p> </button></li>";
             }
             answerElements += "</ul>";
-            document.getElementById("Answers").innerHTML +=  answerElements;
+            Answers.innerHTML +=  answerElements;
             // Divider
-            document.getElementById("Answers").innerHTML += "<div class='Divider'></div>";
+            Answers.innerHTML += "<div class='Divider'></div>";
             // Leader Board Button
-            document.getElementById("Buttons").innerHTML +=  "<button type=\"button\" id=\"LeaderBoard\"> <a href=\"../Leaderboard/leaderboard.html\">LeaderBoard</a> </button>";
+            MiscButtons.innerHTML +=  "<button type=\"button\" id=\"LeaderBoard\"> <a href=\"../Leaderboard/leaderboard.html\">LeaderBoard</a> </button>";
             // Skip Button
-            document.getElementById("Buttons").innerHTML +=  "<button type=\"button\" id=\"QuestionSkip\" onclick=\"SkipQuestion()\">Skip Question</button>";
+            MiscButtons.innerHTML +=  "<button type=\"button\" id=\"QuestionSkip\" onclick=\"SkipQuestion()\">Skip Question</button>";
 
         }
         else
@@ -456,12 +243,13 @@ function switchToQuiz(selectedQuiz)
             console.log("Provided Name: " + sessions[q].name + ". Does not match any available Session");
         }
     }
-
 }
 
 /*  */
-function fetchQuiz(QuizID){}
+function fetchQuiz(QuizID)
+{
 
+}
 
 
 
@@ -476,8 +264,10 @@ function fetchQuiz(QuizID){}
 */
 
 /* Retrieves Current Question Based on CurrentQuestion index */
-function getQuestions(i)
+function getQuestions()
 {
+    // /question
+
     //Check for invalid index
     if(i < 0 || i > numOfQuestions-1)
     {
@@ -513,7 +303,7 @@ function updateQuizUI()
 }
 
 /* Retrieves all Answers of Current Questions based on Current Index and Provided Letter */
-function getAnswers(i, letters)
+function sendAnswers()
 {
     //Check for invalid index
     if(i < 0 || i > numOfQuestions-1)
@@ -534,10 +324,4 @@ function getAnswers(i, letters)
             default: alert("Invalid letter option: " + letters + " (it must be one of 'A', 'B', 'C' and 'D')");
         }
     }
-}
-
-/*  */
-function getCorrectAnswer()
-{
-    //TODO - do stuff
 }
