@@ -232,53 +232,100 @@ nav{
     padding: 22px;
     margin: 18px;
 }
+/* Defining the screen sizes to make it more responsive - attributes*/
+/*$destop:1200px;*/
+/*$laptop:1024px;*/
+/*$tablet:768px;*/
+/*phone:480px;*/
+
 
 /* TEAM section */
-.wrapper{
-    position: relative;
-    top: 100px;
-    background-color: #FCAF45;
-    padding: 22px;
-    margin: 18px;
+@media screen and (max-width: 700px){
+    .wrapper {
+        position: relative;
+        top: 100px;
+        background-color:  darkred;
+        padding: 22px;
+        margin: 18px;
+    }
+    .team-member{
+        background: white;
+        margin-top: 4px;
+        border: black;
+        /*margin-left:10px;*/
+        /*margin-right: 20px;*/
+        /*margin-bottom: 80px;*/
+        margin: 70px;
+        width: 200px;
+        float: left;
+        /*padding: 10px;*/
+        line-height: 18px;
+        color: darkgray;
+        position: relative;
+    }
+    .team{
+        padding-top: 30px;
+        padding-left: inherit;
+        text-align: -moz-left;
+
+        justify-content: center;
+    }
 }
 
-.team{
-    display: flex;
-    text-align: -moz-left;
-    width: auto;
-    justify-content: center;
+@media screen and (min-width: 908px){
+    .wrapper{
+        position: relative;
+        top: 100px;
+        background-color: #FCAF45;
+        padding: 22px;
+        margin: 18px;
+    }
+
+    .team{
+        padding-top: 70px;
+        display: flex;
+        text-align: -moz-left;
+        width: auto;
+        justify-content: center;
+    }
 }
 .team-member h2{
     padding: 15px;
     color: indianred;
     margin-top: 30px;
+    font-size: 25px;
+
 }
 
 .team-member{
-    background: #55ACEE;
+    background: white;
     margin-top: 4px;
     border: black;
-    margin-left: 2px;
-    margin-right: 1px;
+    margin-left:2px;
+    margin-right: 20px;
     margin-bottom: 80px;
-    width: 300px;
-    padding: 10px;
+    width: 250px;
+    padding: 8px;
     line-height: 18px;
     color: darkgray;
     position: relative;
 }
 
 .team-member p.roles{
-    font-size: 12px;
+    font-size: 10px;
     color: grey;
     margin: 12px 0;
     text-transform: uppercase;
     text-align: center;
 }
+.team-member p{
+    color: grey;
+    text-align: center;
+}
 
 .avatar{
-    width: 80px;
-    height: 80px;
+    /*width: 80px;*/
+    /*height: 80px;*/
     border-radius: 44%;
     position: absolute;
     top: -40px;
@@ -373,7 +420,8 @@ body {
 .ft-legal {
     position: relative;
     padding: 0.9375rem 1.875rem;
-    background-color: #333;
+    /*background-color: #333;*/
+    background-color: #053742;
 }
 .ft-legal-list {
     width: 100%;
