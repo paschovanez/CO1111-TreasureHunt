@@ -7,8 +7,9 @@
 
 /* Global Variables for Quiz */
 let lines = []; //Array of text lines in response from API
-let sessions = []; //Array of available sessions
-let currentQuiz;
+let availableTH = []; //Array of available sessions
+let currentQuizName;
+let currentSession;
 let numOfQuestions;
 let currentQuestion;
 let answerLetters = ['A', 'B', 'C', 'D'];
@@ -97,18 +98,18 @@ async function fetchSessions()
 {
     console.log("Fetch Sessions: ");
 
-    /*   Fetch   */
+    /*   Fetch All Available Treasure Hunt Sessions   */
     const response = await fetch("https://codecyprus.org/th/api/list")
         .then(response => response.json() /* Convert it from JSON */)
-            .then(json => {sessions = json.treasureHunts /* Save in Variable Array */});
+            .then(json => {availableTH = json.treasureHunts /* Save in Variable Array */});
 
     //Print Sessions available for debug
-    if(sessions !== 0)
+    if(availableTH !== 0)
     {
         console.log("JSON Responded with available sessions: ");
-        for(let l = 0; l < sessions.length; l++)
+        for(let l = 0; l < availableTH.length; l++)
         {
-            console.log(sessions[l].name);
+            console.log(availableTH[l].name);
         }
     }
     else
@@ -125,7 +126,7 @@ async function fetchSessions()
     /*
         Update Title
     */
-    ContentTitle.innerHTML = "<h1>Available Sessions </h1>";
+    ContentTitle.innerHTML = "<h1> Available Sessions </h1>";
 
     /*
         Update Loading Indicator
@@ -142,21 +143,21 @@ async function fetchSessions()
     let sessionListElements = "<ul>";
 
     // Update List of Available Quiz Sessions
-    for(let s = 0; s < sessions.length; s++)
+    for(let s = 0; s < availableTH.length; s++)
     {
         /* Create Items to populate list of Sessions with */
 
         //Function Value of Button
-        let noSpaces = "\"" + sessions[s].name.split(" ").join("") + "\"";
+        currentQuizName = "\"" + availableTH[s].name.split(" ").join("") + "\"";
 
         // Session Element
         sessionListElements +=
             "<li>" +
                 "<div class =" + sessionID + ">" +
-                    "<p>" +  "<b>" + sessions[s].name + "</b>" + "</p>" +
-                    "<p>" + "<i>" +sessions[s].description + "</i>" + "</p>" +
+                    "<p>" +  "<b>" + availableTH[s].name + "</b>" + "</p>" +
+                    "<p>" + "<i>" +availableTH[s].description + "</i>" + "</p>" +
                     //Move on to begin playing
-                    "<button onclick=" + "'getPlayerDetails(" + noSpaces + ");'" + ">" + "Join Game" + "</button>" +
+                    "<button onclick=" + "getPlayerDetails(\"" + availableTH[s].uuid + "\");" + ">" + "Join Game" + "</button>" +
                 "</div>" +
             "</li>";
     }
@@ -167,6 +168,8 @@ async function fetchSessions()
     // Add list into HTML element
     ListOfQuizzes.innerHTML = sessionListElements;
     ListOfQuizzes.innerHTML += "<div class='Divider'></div>";
+
+    console.log("---> Player needs to choose a Quiz from the list");
 }
 
 
@@ -181,74 +184,41 @@ async function fetchSessions()
     *
 */
 
-function getPlayerDetails(selectedQuiz)
+function getPlayerDetails(QuizID)
 {
+    console.log("ID of currently selected Quiz: " + QuizID);
+
+    //Clear List of Sessions
+    ListOfQuizzes.innerHTML = "";
+
+    //Update Title
+    ContentTitle.innerHTML = "<h1>Join Session</h1>";
+
     //Input name
+    Question.innerText = "Enter Your Name";
 
-    //  &app= ???
-
-    switchToQuiz(selectedQuiz, playerName);
+    console.log("---> Player needs to enter their name");
+    Answers.innerHTML = "<form>" + "<input id='username' type='text'>" + "<button onclick='fetchQuiz(" + QuizID + " , " + 'document.getElementById("username").value' + ")'> Submit </button>" + "</form>";
 }
 
-/* Switch from list of Sessions to Quiz */
-function switchToQuiz(selectedQuiz, playerName)
+/* Request Quiz from API and store it, then Initialize the Quiz onto the page */
+async function fetchQuiz(QuizID, playerName) //name, id
 {
-    for(let q = 0; q < sessions.length; q++)
-    {
-        // Check if Name provieded is the same as current Quiz
-        if (sessions[q].name.split(" ").join("") === selectedQuiz )
-        {
-            // Print name for debugging
-            console.log("You selected this Session: " + sessions[q].name);
-            currentQuiz = sessions[q].uuid;
-
-            /*
-                Switch to appropriate quiz
-            */
-
-            // Load / Create Quiz
-            //fetchQuiz(currentQuiz);
-            updateQuizUI();
+    /*playerName = document.getElementById("username").value;*/
+    console.log("PlayerName: " + playerName);
 
 
-            // Create Placeholder Quiz
-            /* document.getElementById("").innerHTML =  "<> sessions[q]. </>"*/
 
-            // Title
-            ContentTitle.innerHTML =  "<h1>" + sessions[q].name + "</h1>"
-            // List of Quizzes
-            ListOfQuizzes.innerHTML =  "";
-            // Question
-            Question.innerHTML +=  "<p> Sample Question for: " + sessions[q].name +  "</p>";
-            Question.innerHTML +=  "<div class='Divider'></div>";
 
-            // Answers
-            let answerElements = "<ul>";
-            for(let a = 0; a < 4 /*NumOfQuestions.length*/; a++)
-            {
-                answerElements += "<li><button> <p id=" + answerIDs[a] + "> Possible Answer" + " " + answerLetters[a]  + "</p> </button></li>";
-            }
-            answerElements += "</ul>";
-            Answers.innerHTML +=  answerElements;
-            // Divider
-            Answers.innerHTML += "<div class='Divider'></div>";
-            // Leader Board Button
-            MiscButtons.innerHTML +=  "<button type=\"button\" id=\"LeaderBoard\"> <a href=\"../Leaderboard/leaderboard.html\">LeaderBoard</a> </button>";
-            // Skip Button
-            MiscButtons.innerHTML +=  "<button type=\"button\" id=\"QuestionSkip\" onclick=\"SkipQuestion()\">Skip Question</button>";
+    /*   Fetch Quiz   */
+    // Returns the status of the quiz, the players session ID, and the amount of questions in that quiz.
+    const response = await fetch("https://codecyprus.org/th/api/start?player=" + playerName + "&app=" + appName + "-app&treasure-hunt-id=" + QuizID)
+        .then(response => response.json() /* Convert it from JSON */)
+        .then(json => {currentSession = json /* Save in Variable */});
 
-        }
-        else
-        {
-            console.log("Provided Name: " + sessions[q].name + ". Does not match any available Session");
-        }
-    }
-}
+        console.log("Current Session: " + currentSession + ". Does not match any available Session");
 
-/*  */
-function fetchQuiz(QuizID)
-{
-
+        //getQuestions(currentSession.session);
 }
 
 
@@ -264,22 +234,32 @@ function fetchQuiz(QuizID)
 */
 
 /* Retrieves Current Question Based on CurrentQuestion index */
-function getQuestions()
+async function getQuestions(SessionID)
 {
-    // /question
+    const response = await fetch("https://codecyprus.org/th/api/question?session=" + SessionID)
+        .then(response => response.json() /* Convert it from JSON */)
+        .then(json => {currentQuestion = json /* Save in Variable */});
 
-    //Check for invalid index
-    if(i < 0 || i > numOfQuestions-1)
+
+    // Create Question Text
+    Question.innerText = currentQuestion.questionText;
+
+    // Create Answer HTML according to Question Type
+    if (currentQuestion.questionType === "INTEGER" || currentQuestion.questionType === "NUMERIC" )
     {
-        console.log("GetQuestion Function: ");
-        alert("Index out of bounds: " + i + " (it must be 0.." + numOfQuestions + ")");
+        //Answers.innerHTML = ;
     }
-    else
+    else if (currentQuestion.questionType === "BOOLEAN")
     {
-        let index = 1 + i * 6;
-        console.log(lines[index]); //Print lines(index) content for debugging
-
-        return lines[index];
+        //Answers.innerHTML = ;
+    }
+    else if (currentQuestion.questionType === "MCQ")
+    {
+        //Answers.innerHTML = ;
+    }
+    else if (currentQuestion.questionType === "TEXT")
+    {
+        //Answers.innerHTML = ;
     }
 }
 
@@ -292,36 +272,11 @@ function SkipQuestion()
 /* Updates Content of Question and Answers in Quiz */
 function updateQuizUI()
 {
-    //Update Current Question
-    document.getElementById("Question").innerText = getQuestions(currentQuestion);
 
-    //Update Answers of Current Question
-    for(let a = 0; a < answerLetters.length; a++)
-    {
-        document.getElementById(answerIDs[a]).innerText = getAnswers(currentQuestion, answerLetters[a]);
-    }
 }
 
 /* Retrieves all Answers of Current Questions based on Current Index and Provided Letter */
 function sendAnswers()
 {
-    //Check for invalid index
-    if(i < 0 || i > numOfQuestions-1)
-    {
-        console.log("GetAnswers Function: ");
-        alert("Index out of bounds: " + i + " (it must be 0.." + numOfQuestions + ")");
-    }
-    else
-    {
-        //Return Answer of Question based on given index and corresponding letter
-        switch(letters.toUpperCase())
-        {
-            case 'A': return lines[2 + i * 6];
-            case 'B': return lines[3 + i * 6];
-            case 'C': return lines[4 + i * 6];
-            case 'D': return lines[5 + i * 6];
 
-            default: alert("Invalid letter option: " + letters + " (it must be one of 'A', 'B', 'C' and 'D')");
-        }
-    }
 }
