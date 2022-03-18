@@ -118,6 +118,16 @@
     /*Text*/
     text-align: center;
 }
+#Answers input
+{
+    /*Text*/
+    color: black;
+}
+#Answers button
+{
+    /*Text*/
+    color: black;
+}
 #Answers ul
 {
     /*Styling*/
@@ -177,7 +187,7 @@
     /*Positioning*/
     position: relative;
     /*Text*/
-    color: inherit;
+    color: black;
 }
 #Buttons #LeaderBoard a
 {

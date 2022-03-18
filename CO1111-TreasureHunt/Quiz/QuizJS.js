@@ -6,7 +6,6 @@
 */
 
 /* Global Variables for Quiz */
-let lines = []; //Array of text lines in response from API
 let availableTH = []; //Array of available sessions
 let currentQuizName;
 let currentSession;
@@ -198,16 +197,14 @@ function getPlayerDetails(QuizID)
     Question.innerText = "Enter Your Name";
 
     console.log("---> Player needs to enter their name");
-    Answers.innerHTML = "<form>" + "<input id='username' type='text'>" + "<button onclick='fetchQuiz(" + QuizID + " , " + 'document.getElementById("username").value' + ")'> Submit </button>" + "</form>";
+    Answers.innerHTML = "<form onsubmit='return false'>" + "<input id='username' type='text'>" + "<button onclick='startQuiz(\"" + QuizID + "\" , " + 'document.getElementById("username").value' + ") '> Submit </button>" + "</form>";
 }
 
 /* Request Quiz from API and store it, then Initialize the Quiz onto the page */
-async function fetchQuiz(QuizID, playerName) //name, id
+async function startQuiz(QuizID, playerName) //name, id
 {
-    /*playerName = document.getElementById("username").value;*/
     console.log("PlayerName: " + playerName);
-
-
+    console.log("---> Fetching Quiz");
 
 
     /*   Fetch Quiz   */
@@ -216,9 +213,32 @@ async function fetchQuiz(QuizID, playerName) //name, id
         .then(response => response.json() /* Convert it from JSON */)
         .then(json => {currentSession = json /* Save in Variable */});
 
-        console.log("Current Session: " + currentSession + ". Does not match any available Session");
+        console.log("Current Session Does not match any available Session: ");
+        console.log(currentSession);
 
-        //getQuestions(currentSession.session);
+
+        //Check if any Error Messages exist
+        if(currentSession.status === "OK")
+        {
+            getQuestions(currentSession.session);
+        }
+        else
+        {
+            //Check if Name is available
+            if(currentSession.errorMessages === "The specified playerName: " + playerName + ", is already in use (try a different one).")
+            {
+                alert("Name is already in use, please try another name.")
+            }
+            //Check if Missing param
+            else if(currentSession.errorMessages === "Missing or empty parameter: app"){}
+            //Check if  unknown treasure id
+            else if(currentSession.errorMessages === "Could not find a treasure hunt for the specified id:" + QuizID){}
+            //Uncaught exception
+            else
+            {
+                alert("Unknown error occurred!")
+            }
+        }
 }
 
 
@@ -233,50 +253,195 @@ async function fetchQuiz(QuizID, playerName) //name, id
     *
 */
 
-/* Retrieves Current Question Based on CurrentQuestion index */
+/* Retrieves Current Question from API */
 async function getQuestions(SessionID)
 {
+    console.log("---> Fetching Question");
+
+
+
+    /* Fetch Current Question */
     const response = await fetch("https://codecyprus.org/th/api/question?session=" + SessionID)
         .then(response => response.json() /* Convert it from JSON */)
         .then(json => {currentQuestion = json /* Save in Variable */});
 
+    console.log(currentQuestion);
+
 
     // Create Question Text
-    Question.innerText = currentQuestion.questionText;
+    Question.innerHTML = currentQuestion.questionText;
+
+    // Check whether question can be skipped or not
+    if(currentQuestion.canBeSkipped === true)
+    {
+        MiscButtons.innerHTML = "<button id='LeaderBoard'>Leaderboard</button> <button id='QuestionSkip' onclick='SkipQuestion(\"" + SessionID + "\")'>Skip Question</button>";
+    }
+    else
+    {
+        MiscButtons.innerHTML = "<button id='LeaderBoard'>Leaderboard</button>";
+    }
 
     // Create Answer HTML according to Question Type
     if (currentQuestion.questionType === "INTEGER" || currentQuestion.questionType === "NUMERIC" )
     {
-        //Answers.innerHTML = ;
+        console.log("---> Player Needs to Input a Number");
+        Answers.innerHTML = "<input id='numAnswer' type='number'>" + "<button onclick='sendAnswers(\"" + SessionID + "\" , " + 'document.getElementById("numAnswer").value' + ") '> Submit </button>";
     }
     else if (currentQuestion.questionType === "BOOLEAN")
     {
-        //Answers.innerHTML = ;
+        console.log("---> Player Needs to Select true/false");
+        Answers.innerHTML = "<button id='trueButton' value='true' onclick='sendAnswers(\"" + SessionID + "\", \"true\")'>True</button>" +
+                            "<button id='falseButton' value='false' onclick='sendAnswers(\"" + SessionID + "\", \"false\")'>False</button>";
     }
     else if (currentQuestion.questionType === "MCQ")
     {
-        //Answers.innerHTML = ;
+        console.log("---> Player Needs to select an option");
+
+        //Create Start of List
+        Answers.innerHTML = "<ul>";
+
+        //Create list elements
+        Answers.innerHTML += "<li> <button id='mcqA' onclick='sendAnswers(\"" + SessionID + "\", \"A\")'> A </button> </li>";
+        Answers.innerHTML += "<li> <button id='mcqB' onclick='sendAnswers(\"" + SessionID + "\", \"B\")'> B </button> </li>";
+        Answers.innerHTML += "<li> <button id='mcqC' onclick='sendAnswers(\"" + SessionID + "\", \"C\")'> C </button> </li>";
+        Answers.innerHTML += "<li> <button id='mcqD' onclick='sendAnswers(\"" + SessionID + "\", \"D\")'> D </button> </li>";
+
+        //List ending
+        Answers.innerHTML += "</ul>";
     }
     else if (currentQuestion.questionType === "TEXT")
     {
-        //Answers.innerHTML = ;
+        console.log("---> Player Needs to Input Text");
+        Answers.innerHTML = "<input id='textAnswer' type='text'>" + "<button onclick='sendAnswers(\"" + SessionID + "\" , " + 'document.getElementById("textAnswer").value' + ") '> Submit </button>";
     }
 }
 
 /* Skips the question the player is currently on if possible */
-function SkipQuestion()
+async function SkipQuestion(SessionID)
 {
+    console.log("---> Skipping Question")
 
-}
+    let SkipResult;
 
-/* Updates Content of Question and Answers in Quiz */
-function updateQuizUI()
-{
+    //Ask for confirmation to skip current question
+    //Yes
+    if(confirm())
+    {
+        /* Fetch Current Question */
+        const response = await fetch("https://codecyprus.org/th/api/skip?session=" + SessionID)
+            .then(response => response.json() /* Convert it from JSON */)
+            .then(json => {SkipResult = json /* Save in Variable */});
 
+        // Check whether or not the quiz has been completed
+        //Fetch Next Question
+        if(SkipResult.completed === false)
+        {
+            getQuestions(SessionID)
+        }
+        //Finish Quiz - Redirect to Leaderboard
+        else
+        {
+            alert("Congratulations You Finished The Quiz");
+            window.location.href = "../Leaderboard/leaderboard.html";
+        }
+    }
+    //No - Do nothing
+    else
+    {
+
+    }
 }
 
 /* Retrieves all Answers of Current Questions based on Current Index and Provided Letter */
-function sendAnswers()
+async function sendAnswers(SessionID, CurrentAnswer)
 {
+    getLocation(SessionID);
 
+
+
+    console.log("---> Player Provided Answer:");
+    console.log(CurrentAnswer);
+
+
+    let AnswerResult;
+
+
+    /* Send Answer */
+    const response = await fetch("https://codecyprus.org/th/api/answer?session=" + SessionID + "&answer=" + CurrentAnswer)
+        .then(response => response.json() /* Convert it from JSON */)
+        .then(json => {AnswerResult = json /* Save in Variable */});
+
+    if(AnswerResult.correct === true)
+    {
+        console.log("Question Answered Correctly!");
+
+        // Check whether or not the quiz has been completed
+        //Fetch Next Question
+        if(AnswerResult.completed === false)
+        {
+            getQuestions(SessionID);
+        }
+        //Finish Quiz - Redirect to Leaderboard
+        else
+        {
+            alert("Congratulations You Finished The Quiz");
+            window.location.href = "../Leaderboard/leaderboard.html";
+        }
+    }
+    else
+    {
+        alert("Question Not Answered Correctly!");
+    }
+}
+
+
+
+/*
+    *
+    *
+    *
+    * Misc
+    *
+    *
+    *
+* */
+
+async function getLocation(SessionID)
+{
+    console.log("---> Requesting Location");
+
+    let playerLocation;
+
+    //Check if getting location is supported or not ----> Code from W3Schools: https://www.w3schools.com/html/html5_geolocation.asp
+    if (navigator.geolocation) {
+        playerLocation = navigator.geolocation.getCurrentPosition(returnLocation);
+    }
+    else
+    {
+        alert("Geolocation is not supported by this browser.");
+    }
+
+    let locationUpdateResult;
+
+    console.log("---> Submitting Location")
+
+    /* Send Location */
+    const response = await fetch("https://codecyprus.org/th/api/answer?session=" + SessionID + "&latitude==" + playerLocation.coords.latitude + "&longitude" + playerLocation.coords.longitude    )
+        .then(response => response.json() /* Convert it from JSON */)
+        .then(json => {locationUpdateResult = json /* Save in Variable */});
+
+    if(locationUpdateResult.status === "OK")
+    {
+        alert("Location Updated!");
+        console.log(playerLocation.coords.latitude + "\n" + playerLocation.coords.longitude);
+    }
+    else
+    {
+        alert("Location NOT Updated!");
+    }
+}
+
+function returnLocation(position)
+{
+    return position;
 }
