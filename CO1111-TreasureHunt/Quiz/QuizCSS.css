@@ -161,27 +161,46 @@
     /*Spacing*/
     padding: 1vw;
 }
+
 #Buttons button
 {
     /*Spacing*/
     padding: 0.5vw;
     width: 20%;
+
     /*Border*/
     border-radius: 4px;
+
     /*Text*/
+    text-align: center;
     color: black;
+    font-size: 1rem;
 }
 #Buttons button:hover
 {
     /*Styling*/
     background-color: silver;
 }
+
 #Buttons #QuestionSkip
 {
     /*Positioning*/
     position: relative;
     left: 60%;
 }
+#Buttons #QuestionSkip-Disabled
+{
+    /*Positioning*/
+    position: relative;
+    left: 60%;
+
+    /*Background*/
+    background-color: darkgrey;
+
+    /*Text*/
+    text-decoration: line-through;
+}
+
 #Buttons #LeaderBoard
 {
     /*Positioning*/

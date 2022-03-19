@@ -13,17 +13,19 @@ let numOfQuestions;
 let currentQuestion;
 let answerLetters = ['A', 'B', 'C', 'D'];
 let answerIDs = ['answerA', 'answerB' , 'answerC' , 'answerD'];
-let playerName;
-const appName = "Team1";
+let playerScore = 0;
+let playerLocation;
+const appName = "2022Team1";
 
 /* Global HTML variables */
-const ContentTitle = document.getElementById("ContentTitle");
-const QuizContent = document.getElementById("QuizContent");
-const LoadingIndicator = document.getElementById("LoadingIndicator");
-const ListOfQuizzes = document.getElementById("ListOfQuizzes");
-const Question = document.getElementById("Question");
-const Answers = document.getElementById("Answers");
-const MiscButtons = document.getElementById("Buttons");
+const htmlPlayerName = document.getElementById("PlayerName");
+const htmlPlayerScore = document.getElementById("PlayerScore");
+const htmlContentTitle = document.getElementById("ContentTitle");
+const htmlLoadingIndicator = document.getElementById("LoadingIndicator");
+const htmlListOfQuizzes = document.getElementById("ListOfQuizzes");
+const htmlQuestion = document.getElementById("Question");
+const htmlAnswers = document.getElementById("Answers");
+const htmlMiscButtons = document.getElementById("Buttons");
 
 
 /*
@@ -41,40 +43,15 @@ const MiscButtons = document.getElementById("Buttons");
 */
 initialize();
 
-/* Removes all non-necessary content from Page */
-function clearScreen()
-{
-    /* .remove() / .removeChild() */
-
-    // Empties Title
-    //document.getElementById('ContentTitle').removeChild();
-}
-
 /* Sets the Amount of Questions and Default Start Question, then calls an update of the UI */
 function initialize()
 {
     // Log for Debug
     console.log("Initializing Page")
 
-    /*let initCase = 0;
-    switch(initCase)
-    {
-        case 0:
-            fetchSessions();
-
-            initCase = 1;
-            break;
-
-        case 1:
-            updateSessionUI();
-
-            initCase = 2;
-            break;
-
-        default:
-            console.log("switch didnt work");
-    }*/
-
+    // Update player location every 1min
+    // (min interval allowed by API: 30sec)
+    setInterval(getLocation, 60000);
 
     // Request currently available sessions
     fetchSessions();
@@ -95,6 +72,8 @@ function initialize()
 /* Requests a list of available sessions from the API */
 async function fetchSessions()
 {
+    clearScreen();
+
     console.log("Fetch Sessions: ");
 
     /*   Fetch All Available Treasure Hunt Sessions   */
@@ -102,13 +81,13 @@ async function fetchSessions()
         .then(response => response.json() /* Convert it from JSON */)
             .then(json => {availableTH = json.treasureHunts /* Save in Variable Array */});
 
-    //Print Sessions available for debug
+    // Print Sessions available for debug
     if(availableTH !== 0)
     {
         console.log("JSON Responded with available sessions: ");
         for(let l = 0; l < availableTH.length; l++)
         {
-            console.log(availableTH[l].name);
+            console.log(availableTH[l].name + " - ");
         }
     }
     else
@@ -125,12 +104,12 @@ async function fetchSessions()
     /*
         Update Title
     */
-    ContentTitle.innerHTML = "<h1> Available Sessions </h1>";
+    htmlContentTitle.innerHTML = "<h1> Available Sessions </h1>";
 
     /*
         Update Loading Indicator
     */
-    LoadingIndicator.innerText = "";
+    htmlLoadingIndicator.innerText = "";
 
     /*
         Update List
@@ -165,8 +144,8 @@ async function fetchSessions()
     sessionListElements += "</ul>";
 
     // Add list into HTML element
-    ListOfQuizzes.innerHTML = sessionListElements;
-    ListOfQuizzes.innerHTML += "<div class='Divider'></div>";
+    htmlListOfQuizzes.innerHTML = sessionListElements;
+    htmlListOfQuizzes.innerHTML += "<div class='Divider'></div>";
 
     console.log("---> Player needs to choose a Quiz from the list");
 }
@@ -187,17 +166,20 @@ function getPlayerDetails(QuizID)
 {
     console.log("ID of currently selected Quiz: " + QuizID);
 
-    //Clear List of Sessions
-    ListOfQuizzes.innerHTML = "";
+    // Clear List of Sessions
+    htmlListOfQuizzes.innerHTML = "";
 
-    //Update Title
-    ContentTitle.innerHTML = "<h1>Join Session</h1>";
+    // Update Title
+    htmlContentTitle.innerHTML = "<h1>Join Session</h1>";
 
-    //Input name
-    Question.innerText = "Enter Your Name";
+    // Input name
+    htmlQuestion.innerText = "Enter Your Name";
 
     console.log("---> Player needs to enter their name");
-    Answers.innerHTML = "<form onsubmit='return false'>" + "<input id='username' type='text'>" + "<button onclick='startQuiz(\"" + QuizID + "\" , " + 'document.getElementById("username").value' + ") '> Submit </button>" + "</form>";
+    htmlAnswers.innerHTML = "<form onsubmit='return false'>" + "<input id='username' type='text'>" + "<button onclick='startQuiz(\"" + QuizID + "\" , " + 'document.getElementById("username").value' + ") '> Submit </button>" + "</form>";
+
+    // Back to available TreasureHunts
+    htmlMiscButtons.innerHTML = "<button id='backToList' onclick='fetchSessions()'>Back</button>";
 }
 
 /* Request Quiz from API and store it, then Initialize the Quiz onto the page */
@@ -213,31 +195,48 @@ async function startQuiz(QuizID, playerName) //name, id
         .then(response => response.json() /* Convert it from JSON */)
         .then(json => {currentSession = json /* Save in Variable */});
 
-        console.log("Current Session Does not match any available Session: ");
+        console.log("Current Session: ");
         console.log(currentSession);
 
 
-        //Check if any Error Messages exist
+        // Check Status for whether Error Messages exist
         if(currentSession.status === "OK")
         {
+            //Display Player Name & Initial Score
+            htmlPlayerName.innerText = playerName;
+            htmlPlayerScore.innerHTML = "<p id='pScore'> Score: " + playerScore + "</p>";
+
+            // Update Content Title to display name of Quiz currently being played
+            for(let n = 0; n < availableTH.length; n++)
+            {
+                if(availableTH[n].uuid === QuizID)
+                {
+                    htmlContentTitle.innerHTML = "<h1>" + availableTH[n].name + "</h1>";
+                }
+            }
+
             getQuestions(currentSession.session);
+        }
+        else if(currentSession.status === "ERROR")
+        {
+            // Check if Name is available
+            if(currentSession.errorMessages == "The specified playerName: " + playerName + ", is already in use (try a different one).")
+            {
+                alert("The Name: " + "'" + playerName + "'" + " is already in use, please try another name.")
+            }
+            // Check if Missing param
+            else if(currentSession.errorMessages === "Missing or empty parameter: app"){}
+            // Check if  unknown treasure id
+            else if(currentSession.errorMessages === "Could not find a treasure hunt for the specified id:" + QuizID){}
+            // Uncaught exception
+            else
+            {
+                alert("Player Name Unknown error occurred!")
+            }
         }
         else
         {
-            //Check if Name is available
-            if(currentSession.errorMessages === "The specified playerName: " + playerName + ", is already in use (try a different one).")
-            {
-                alert("Name is already in use, please try another name.")
-            }
-            //Check if Missing param
-            else if(currentSession.errorMessages === "Missing or empty parameter: app"){}
-            //Check if  unknown treasure id
-            else if(currentSession.errorMessages === "Could not find a treasure hunt for the specified id:" + QuizID){}
-            //Uncaught exception
-            else
-            {
-                alert("Unknown error occurred!")
-            }
+            alert("Player Name Unknown Status!")
         }
 }
 
@@ -267,52 +266,51 @@ async function getQuestions(SessionID)
 
     console.log(currentQuestion);
 
-
     // Create Question Text
-    Question.innerHTML = currentQuestion.questionText;
+    htmlQuestion.innerHTML = currentQuestion.questionText;
 
     // Check whether question can be skipped or not
     if(currentQuestion.canBeSkipped === true)
     {
-        MiscButtons.innerHTML = "<button id='LeaderBoard'>Leaderboard</button> <button id='QuestionSkip' onclick='SkipQuestion(\"" + SessionID + "\")'>Skip Question</button>";
+        htmlMiscButtons.innerHTML = "<button id='LeaderBoard'>Leaderboard</button> <button id='QuestionSkip' onclick='SkipQuestion(\"" + SessionID + "\")'>Skip Question</button>";
     }
     else
     {
-        MiscButtons.innerHTML = "<button id='LeaderBoard'>Leaderboard</button>";
+        htmlMiscButtons.innerHTML = "<button id='LeaderBoard'>Leaderboard</button> <button id='QuestionSkip-Disabled'>Skip Question</button>";
     }
 
     // Create Answer HTML according to Question Type
     if (currentQuestion.questionType === "INTEGER" || currentQuestion.questionType === "NUMERIC" )
     {
         console.log("---> Player Needs to Input a Number");
-        Answers.innerHTML = "<input id='numAnswer' type='number'>" + "<button onclick='sendAnswers(\"" + SessionID + "\" , " + 'document.getElementById("numAnswer").value' + ") '> Submit </button>";
+        htmlAnswers.innerHTML = "<form onsubmit='return false'>" + "<input id='numAnswer' type='number'>" + "<button onclick='sendAnswers(\"" + SessionID + "\" , " + 'document.getElementById("numAnswer").value' + ") '> Submit </button>" + "</form>";
     }
     else if (currentQuestion.questionType === "BOOLEAN")
     {
         console.log("---> Player Needs to Select true/false");
-        Answers.innerHTML = "<button id='trueButton' value='true' onclick='sendAnswers(\"" + SessionID + "\", \"true\")'>True</button>" +
+        htmlAnswers.innerHTML = "<button id='trueButton' value='true' onclick='sendAnswers(\"" + SessionID + "\", \"true\")'>True</button>" +
                             "<button id='falseButton' value='false' onclick='sendAnswers(\"" + SessionID + "\", \"false\")'>False</button>";
     }
     else if (currentQuestion.questionType === "MCQ")
     {
         console.log("---> Player Needs to select an option");
 
-        //Create Start of List
-        Answers.innerHTML = "<ul>";
+        // Create Start of List
+        htmlAnswers.innerHTML = "<ul>";
 
-        //Create list elements
-        Answers.innerHTML += "<li> <button id='mcqA' onclick='sendAnswers(\"" + SessionID + "\", \"A\")'> A </button> </li>";
-        Answers.innerHTML += "<li> <button id='mcqB' onclick='sendAnswers(\"" + SessionID + "\", \"B\")'> B </button> </li>";
-        Answers.innerHTML += "<li> <button id='mcqC' onclick='sendAnswers(\"" + SessionID + "\", \"C\")'> C </button> </li>";
-        Answers.innerHTML += "<li> <button id='mcqD' onclick='sendAnswers(\"" + SessionID + "\", \"D\")'> D </button> </li>";
+        // Create list elements
+        htmlAnswers.innerHTML += "<li> <button id='mcqA' onclick='sendAnswers(\"" + SessionID + "\", \"A\")'> A </button> </li>";
+        htmlAnswers.innerHTML += "<li> <button id='mcqB' onclick='sendAnswers(\"" + SessionID + "\", \"B\")'> B </button> </li>";
+        htmlAnswers.innerHTML += "<li> <button id='mcqC' onclick='sendAnswers(\"" + SessionID + "\", \"C\")'> C </button> </li>";
+        htmlAnswers.innerHTML += "<li> <button id='mcqD' onclick='sendAnswers(\"" + SessionID + "\", \"D\")'> D </button> </li>";
 
-        //List ending
-        Answers.innerHTML += "</ul>";
+        // List ending
+        htmlAnswers.innerHTML += "</ul>";
     }
     else if (currentQuestion.questionType === "TEXT")
     {
         console.log("---> Player Needs to Input Text");
-        Answers.innerHTML = "<input id='textAnswer' type='text'>" + "<button onclick='sendAnswers(\"" + SessionID + "\" , " + 'document.getElementById("textAnswer").value' + ") '> Submit </button>";
+        htmlAnswers.innerHTML = "<form onsubmit='return false'>" + "<input id='textAnswer' type='text'>" + "<button onclick='sendAnswers(\"" + SessionID + "\" , " + 'document.getElementById("textAnswer").value' + ") '> Submit </button>" + "</form>";
     }
 }
 
@@ -323,9 +321,9 @@ async function SkipQuestion(SessionID)
 
     let SkipResult;
 
-    //Ask for confirmation to skip current question
-    //Yes
-    if(confirm())
+    // Ask for confirmation to skip current question
+    // Yes - Proceed
+    if(confirm("This action cannot be undone." + "\n" + "Are you sure you wish to skip this question?"))
     {
         /* Fetch Current Question */
         const response = await fetch("https://codecyprus.org/th/api/skip?session=" + SessionID)
@@ -333,23 +331,22 @@ async function SkipQuestion(SessionID)
             .then(json => {SkipResult = json /* Save in Variable */});
 
         // Check whether or not the quiz has been completed
-        //Fetch Next Question
+        // Fetch Next Question
         if(SkipResult.completed === false)
         {
-            getQuestions(SessionID)
+            getScore(SessionID);
+
+            getQuestions(SessionID);
         }
-        //Finish Quiz - Redirect to Leaderboard
+        // Finish Quiz - Redirect to Leaderboard
         else
         {
             alert("Congratulations You Finished The Quiz");
             window.location.href = "../Leaderboard/leaderboard.html";
         }
     }
-    //No - Do nothing
-    else
-    {
-
-    }
+    // No - Do nothing
+    else{}
 }
 
 /* Retrieves all Answers of Current Questions based on Current Index and Provided Letter */
@@ -375,21 +372,27 @@ async function sendAnswers(SessionID, CurrentAnswer)
     {
         console.log("Question Answered Correctly!");
 
-        // Check whether or not the quiz has been completed
-        //Fetch Next Question
+        // Check whether the quiz has been completed
+        // Fetch Next Question
         if(AnswerResult.completed === false)
         {
+            getScore(SessionID);
+
             getQuestions(SessionID);
         }
-        //Finish Quiz - Redirect to Leaderboard
+        // Finish Quiz - Redirect to Leaderboard
         else
         {
+            getScore(SessionID);
+
             alert("Congratulations You Finished The Quiz");
             window.location.href = "../Leaderboard/leaderboard.html";
         }
     }
     else
     {
+        getScore(SessionID);
+
         alert("Question Not Answered Correctly!");
     }
 }
@@ -406,20 +409,55 @@ async function sendAnswers(SessionID, CurrentAnswer)
     *
 * */
 
+/* Resets all HTML elements within Quiz Layout */
+function clearScreen()
+{
+    // Content Title
+    htmlContentTitle.innerHTML = "";
+
+    // Quiz Content
+    htmlLoadingIndicator.innerHTML = "";
+    htmlListOfQuizzes.innerHTML = "";
+    htmlQuestion.innerHTML = "";
+    htmlAnswers.innerHTML = "";
+
+    // Buttons
+    htmlMiscButtons.innerHTML = "";
+}
+
+/* Get player score from API */
+async function getScore(SessionID)
+{
+    let scoreResult;
+
+    /* Request Score */
+    const response = await fetch("https://codecyprus.org/th/api/score?session=" + SessionID)
+        .then(response => response.json() /* Convert it from JSON */)
+        .then(json => {scoreResult = json /* Save in Variable */});
+
+    console.log("Player Score: " + scoreResult.score);
+
+    // Update Score
+    document.getElementById("PlayerScore").innerText = "Score: " + scoreResult.score;
+}
+
+/* Requests Players Location */
 async function getLocation(SessionID)
 {
     console.log("---> Requesting Location");
 
-    let playerLocation;
-
-    //Check if getting location is supported or not ----> Code from W3Schools: https://www.w3schools.com/html/html5_geolocation.asp
-    if (navigator.geolocation) {
-        playerLocation = navigator.geolocation.getCurrentPosition(returnLocation);
+    // Check if getting location is supported or not ----> Code from W3Schools: https://www.w3schools.com/html/html5_geolocation.asp
+    if (navigator.geolocation)
+    {
+        navigator.geolocation.getCurrentPosition(returnLocation);
+        console.error("PlayerLocation: " + playerLocation)
     }
     else
     {
         alert("Geolocation is not supported by this browser.");
     }
+
+
 
     let locationUpdateResult;
 
@@ -430,6 +468,7 @@ async function getLocation(SessionID)
         .then(response => response.json() /* Convert it from JSON */)
         .then(json => {locationUpdateResult = json /* Save in Variable */});
 
+    /* Check Response from API */
     if(locationUpdateResult.status === "OK")
     {
         alert("Location Updated!");
@@ -441,7 +480,8 @@ async function getLocation(SessionID)
     }
 }
 
+/* Saves Player Location */
 function returnLocation(position)
 {
-    return position;
+    playerLocation = position;
 }
