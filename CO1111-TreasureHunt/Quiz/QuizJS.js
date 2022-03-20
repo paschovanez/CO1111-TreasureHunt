@@ -14,7 +14,8 @@ let currentQuestion;
 let answerLetters = ['A', 'B', 'C', 'D'];
 let answerIDs = ['answerA', 'answerB' , 'answerC' , 'answerD'];
 let playerScore = 0;
-let playerLocation;
+let cSessionID;
+let cPlayerName;
 const appName = "2022Team1";
 
 /* Global HTML variables */
@@ -176,7 +177,7 @@ function getPlayerDetails(QuizID)
     htmlQuestion.innerText = "Enter Your Name";
 
     console.log("---> Player needs to enter their name");
-    htmlAnswers.innerHTML = "<form onsubmit='return false'>" + "<input id='username' type='text'>" + "<button onclick='startQuiz(\"" + QuizID + "\" , " + 'document.getElementById("username").value' + ") '> Submit </button>" + "</form>";
+    htmlAnswers.innerHTML = "<form onsubmit='return false'>" + "<input id='username' type='text'>" + "<br/>" + "<br/>" + "<button onclick='startQuiz(\"" + QuizID + "\" , " + 'document.getElementById("username").value' + ") '> Submit </button>" + "</form>";
 
     // Back to available TreasureHunts
     htmlMiscButtons.innerHTML = "<button id='backToList' onclick='fetchSessions()'>Back</button>";
@@ -188,10 +189,12 @@ async function startQuiz(QuizID, playerName) //name, id
     console.log("PlayerName: " + playerName);
     console.log("---> Fetching Quiz");
 
+    //Save Player Name as Cookie
+    cPlayerName = document.cookie = playerName;
 
     /*   Fetch Quiz   */
     // Returns the status of the quiz, the players session ID, and the amount of questions in that quiz.
-    const response = await fetch("https://codecyprus.org/th/api/start?player=" + playerName + "&app=" + appName + "-app&treasure-hunt-id=" + QuizID)
+    const response = await fetch("https://codecyprus.org/th/api/start?player=" + cPlayerName + "&app=" + appName + "-app&treasure-hunt-id=" + QuizID)
         .then(response => response.json() /* Convert it from JSON */)
         .then(json => {currentSession = json /* Save in Variable */});
 
@@ -203,7 +206,7 @@ async function startQuiz(QuizID, playerName) //name, id
         if(currentSession.status === "OK")
         {
             //Display Player Name & Initial Score
-            htmlPlayerName.innerText = playerName;
+            htmlPlayerName.innerText = "PLayer: " + playerName;
             htmlPlayerScore.innerHTML = "<p id='pScore'> Score: " + playerScore + "</p>";
 
             // Update Content Title to display name of Quiz currently being played
@@ -215,7 +218,10 @@ async function startQuiz(QuizID, playerName) //name, id
                 }
             }
 
-            getQuestions(currentSession.session);
+            //Save Session ID as a Cookie
+            cSessionID = document.cookie = currentSession.session;
+
+            getQuestions(cSessionID);
         }
         else if(currentSession.status === "ERROR")
         {
@@ -283,7 +289,7 @@ async function getQuestions(SessionID)
     if (currentQuestion.questionType === "INTEGER" || currentQuestion.questionType === "NUMERIC" )
     {
         console.log("---> Player Needs to Input a Number");
-        htmlAnswers.innerHTML = "<form onsubmit='return false'>" + "<input id='numAnswer' type='number'>" + "<button onclick='sendAnswers(\"" + SessionID + "\" , " + 'document.getElementById("numAnswer").value' + ") '> Submit </button>" + "</form>";
+        htmlAnswers.innerHTML = "<form onsubmit='return false'>" + "<input id='numAnswer' type='number'>" + "<br/>" + "<br/>"  + "<button onclick='sendAnswers(\"" + SessionID + "\" , " + 'document.getElementById("numAnswer").value' + ") '> Submit </button>" + "</form>";
     }
     else if (currentQuestion.questionType === "BOOLEAN")
     {
@@ -310,7 +316,7 @@ async function getQuestions(SessionID)
     else if (currentQuestion.questionType === "TEXT")
     {
         console.log("---> Player Needs to Input Text");
-        htmlAnswers.innerHTML = "<form onsubmit='return false'>" + "<input id='textAnswer' type='text'>" + "<button onclick='sendAnswers(\"" + SessionID + "\" , " + 'document.getElementById("textAnswer").value' + ") '> Submit </button>" + "</form>";
+        htmlAnswers.innerHTML = "<form onsubmit='return false'>" + "<input id='textAnswer' type='text'>" + "<br/>" + "<br/>"  + "<button onclick='sendAnswers(\"" + SessionID + "\" , " + 'document.getElementById("textAnswer").value' + ") '> Submit </button>" + "</form>";
     }
 }
 
@@ -442,46 +448,47 @@ async function getScore(SessionID)
 }
 
 /* Requests Players Location */
-async function getLocation(SessionID)
+function getLocation(SessionID)
 {
     console.log("---> Requesting Location");
 
-    // Check if getting location is supported or not ----> Code from W3Schools: https://www.w3schools.com/html/html5_geolocation.asp
+    // Geolocation Code from ----> W3Schools: https://www.w3schools.com/html/html5_geolocation.asp
+    // Check if getting location is supported or not
     if (navigator.geolocation)
     {
-        navigator.geolocation.getCurrentPosition(returnLocation);
-        console.error("PlayerLocation: " + playerLocation)
+        //Get Location
+        navigator.geolocation.getCurrentPosition(sendLocation);
     }
     else
     {
         alert("Geolocation is not supported by this browser.");
     }
+}
 
-
+/* Saves Player Location */
+async function sendLocation(position)
+{
+    /*console.log("Players Position: ", position);
+    console.log(position.coords.latitude + "\n" + position.coords.longitude);*/
 
     let locationUpdateResult;
 
-    console.log("---> Submitting Location")
+    console.log("---> Submitting Location");
 
     /* Send Location */
-    const response = await fetch("https://codecyprus.org/th/api/answer?session=" + SessionID + "&latitude==" + playerLocation.coords.latitude + "&longitude" + playerLocation.coords.longitude    )
+    const response = await fetch("https://codecyprus.org/th/api/location?session=" + cSessionID + "&latitude=" + position.coords.latitude + "&longitude=" + position.coords.longitude    )
         .then(response => response.json() /* Convert it from JSON */)
         .then(json => {locationUpdateResult = json /* Save in Variable */});
+
 
     /* Check Response from API */
     if(locationUpdateResult.status === "OK")
     {
-        alert("Location Updated!");
-        console.log(playerLocation.coords.latitude + "\n" + playerLocation.coords.longitude);
+        console.log(position.coords.latitude + "\n" + position.coords.longitude);
     }
     else
     {
         alert("Location NOT Updated!");
+        console.log(locationUpdateResult);
     }
-}
-
-/* Saves Player Location */
-function returnLocation(position)
-{
-    playerLocation = position;
 }
