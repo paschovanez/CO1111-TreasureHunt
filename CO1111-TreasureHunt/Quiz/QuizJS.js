@@ -16,10 +16,13 @@ let currentQuestion;
 let answerLetters = ['A', 'B', 'C', 'D'];
 let answerIDs = ['answerA', 'answerB' , 'answerC' , 'answerD'];
 let playerScore = 0;
+const appName = "2022Team1";
+
+/* Global Cookie Variables */
+let cQuizID;
 let cSessionID;
 let cPlayerName;
 let timerID;
-const appName = "2022Team1";
 
 /* Global HTML variables */
 const htmlPlayerName = document.getElementById("PlayerName");
@@ -58,8 +61,34 @@ function initialize()
     // (min interval allowed by API: 30sec)
     setInterval(getLocation, 120000);
 
-    // Request currently available sessions
-    fetchSessions();
+    // Check if player had previously launched a session
+    if(cSessionID === null || cPlayerName === null || cQuizID === null)
+    {
+        // Request currently available sessions
+        fetchSessions();
+    }
+    else
+    {
+        // Ask if wants to continue?
+        if(confirm("It appears that you have previously played a session." + "\n" + "\n" + "Would you like to continue?"))
+        {
+            console.log("Player Name stored in Cookie: ");
+            console.log(getCookie("cPlayerName"));
+
+            console.log("SessionID stored in Cookie: ");
+            console.log(getCookie("cSessionID"));
+
+            clearScreen();
+
+            continueGame();
+        }
+        else
+        {
+            fetchSessions();
+        }
+
+    }
+
 }
 
 
@@ -190,8 +219,16 @@ async function startQuiz(QuizID, playerName) //name, id
     console.log("PlayerName: " + playerName);
     console.log("---> Fetching Quiz");
 
-    //Save Player Name as Cookie
-    cPlayerName = document.cookie = playerName;
+
+    /* Store QuizID and PlayerName in Cookies*/
+    saveCookie("cPlayerName", playerName, 300000);
+    cPlayerName = getCookie("cPlayerName");
+    console.log(cPlayerName);
+
+    saveCookie("cQuizID", QuizID, 300000);
+    cQuizID = getCookie("cQuizID");
+    console.log(cQuizID);
+
 
     /*   Fetch Quiz   */
     // Returns the status of the quiz, the players session ID, and the amount of questions in that quiz.
@@ -209,8 +246,6 @@ async function startQuiz(QuizID, playerName) //name, id
             // Display Player Name & Initial Score
             htmlPlayerName.innerText = "Player: " + playerName;
             htmlPlayerScore.innerHTML = "<p id='pScore'> Score: " + playerScore + "</p>";
-            // Create Countdown for quiz time remaining
-            //TODO - add timer to scene
 
             // Update Content Title to display name of Quiz currently being played
             for(let n = 0; n < availableTH.length; n++)
@@ -233,10 +268,13 @@ async function startQuiz(QuizID, playerName) //name, id
                 }
             }
 
-            //Save Session ID as a Cookie
-            cSessionID = document.cookie = currentSession.session;
+            /* Save SessionID in cookies */
+            saveCookie("cSessionID", currentSession.session, 300000);
+            cSessionID = getCookie("cSessionID");
+            console.log(cSessionID);
 
-            getQuestions(cSessionID);
+
+            getQuestions(currentSession.session);
         }
         else if(currentSession.status === "ERROR")
         {
@@ -287,52 +325,62 @@ async function getQuestions(SessionID)
 
     console.log(currentQuestion);
 
-    // Create Question Text
-    htmlQuestion.innerHTML = currentQuestion.questionText;
-
-    // Check whether question can be skipped or not
-    if(currentQuestion.canBeSkipped === true)
+    // Check whether the Quiz has finished
+    if(currentQuestion.completed === false)
     {
-        htmlMiscButtons.innerHTML = "<button id='LeaderBoard'>Leaderboard</button> <button id='QuestionSkip' onclick='SkipQuestion(\"" + SessionID + "\")'>Skip Question</button>";
+        // Create Question Text
+        htmlQuestion.innerHTML = currentQuestion.questionText;
+
+        // Check whether question can be skipped or not
+        if(currentQuestion.canBeSkipped === true)
+        {
+            htmlMiscButtons.innerHTML = "<button id='LeaderBoard'>Leaderboard</button> <button id='QuestionSkip' onclick='SkipQuestion(\"" + SessionID + "\")'>Skip Question</button>";
+        }
+        else
+        {
+            htmlMiscButtons.innerHTML = "<button id='LeaderBoard'>Leaderboard</button> <button id='QuestionSkip-Disabled'>Skip Question</button>";
+        }
+
+        // Create Answer HTML according to Question Type
+        if (currentQuestion.questionType === "INTEGER" || currentQuestion.questionType === "NUMERIC" )
+        {
+            console.log("---> Player Needs to Input a Number");
+            htmlAnswers.innerHTML = "<form onsubmit='return false'>" + "<input id='numAnswer' type='number'>" + "<br/>" + "<br/>"  + "<button onclick='sendAnswers(\"" + SessionID + "\" , " + 'document.getElementById("numAnswer").value' + ") '> Submit </button>" + "</form>";
+        }
+        else if (currentQuestion.questionType === "BOOLEAN")
+        {
+            console.log("---> Player Needs to Select true/false");
+            htmlAnswers.innerHTML = "<button id='trueButton' value='true' onclick='sendAnswers(\"" + SessionID + "\", \"true\")'>True</button>" +
+                "<button id='falseButton' value='false' onclick='sendAnswers(\"" + SessionID + "\", \"false\")'>False</button>";
+        }
+        else if (currentQuestion.questionType === "MCQ")
+        {
+            console.log("---> Player Needs to select an option");
+
+            // Create Start of List
+            htmlAnswers.innerHTML = "<ul>";
+
+            // Create list elements
+            htmlAnswers.innerHTML += "<li> <button id='mcqA' onclick='sendAnswers(\"" + SessionID + "\", \"A\")'> A </button> </li>";
+            htmlAnswers.innerHTML += "<li> <button id='mcqB' onclick='sendAnswers(\"" + SessionID + "\", \"B\")'> B </button> </li>";
+            htmlAnswers.innerHTML += "<li> <button id='mcqC' onclick='sendAnswers(\"" + SessionID + "\", \"C\")'> C </button> </li>";
+            htmlAnswers.innerHTML += "<li> <button id='mcqD' onclick='sendAnswers(\"" + SessionID + "\", \"D\")'> D </button> </li>";
+
+            // List ending
+            htmlAnswers.innerHTML += "</ul>";
+        }
+        else if (currentQuestion.questionType === "TEXT")
+        {
+            console.log("---> Player Needs to Input Text");
+            htmlAnswers.innerHTML = "<form onsubmit='return false'>" + "<input id='textAnswer' type='text'>" + "<br/>" + "<br/>"  + "<button onclick='sendAnswers(\"" + SessionID + "\" , " + 'document.getElementById("textAnswer").value' + ") '> Submit </button>" + "</form>";
+        }
     }
     else
     {
-        htmlMiscButtons.innerHTML = "<button id='LeaderBoard'>Leaderboard</button> <button id='QuestionSkip-Disabled'>Skip Question</button>";
+        alert("Congratulations You Finished The Quiz");
+        window.location.href = "../Leaderboard/leaderboard.html";
     }
 
-    // Create Answer HTML according to Question Type
-    if (currentQuestion.questionType === "INTEGER" || currentQuestion.questionType === "NUMERIC" )
-    {
-        console.log("---> Player Needs to Input a Number");
-        htmlAnswers.innerHTML = "<form onsubmit='return false'>" + "<input id='numAnswer' type='number'>" + "<br/>" + "<br/>"  + "<button onclick='sendAnswers(\"" + SessionID + "\" , " + 'document.getElementById("numAnswer").value' + ") '> Submit </button>" + "</form>";
-    }
-    else if (currentQuestion.questionType === "BOOLEAN")
-    {
-        console.log("---> Player Needs to Select true/false");
-        htmlAnswers.innerHTML = "<button id='trueButton' value='true' onclick='sendAnswers(\"" + SessionID + "\", \"true\")'>True</button>" +
-                            "<button id='falseButton' value='false' onclick='sendAnswers(\"" + SessionID + "\", \"false\")'>False</button>";
-    }
-    else if (currentQuestion.questionType === "MCQ")
-    {
-        console.log("---> Player Needs to select an option");
-
-        // Create Start of List
-        htmlAnswers.innerHTML = "<ul>";
-
-        // Create list elements
-        htmlAnswers.innerHTML += "<li> <button id='mcqA' onclick='sendAnswers(\"" + SessionID + "\", \"A\")'> A </button> </li>";
-        htmlAnswers.innerHTML += "<li> <button id='mcqB' onclick='sendAnswers(\"" + SessionID + "\", \"B\")'> B </button> </li>";
-        htmlAnswers.innerHTML += "<li> <button id='mcqC' onclick='sendAnswers(\"" + SessionID + "\", \"C\")'> C </button> </li>";
-        htmlAnswers.innerHTML += "<li> <button id='mcqD' onclick='sendAnswers(\"" + SessionID + "\", \"D\")'> D </button> </li>";
-
-        // List ending
-        htmlAnswers.innerHTML += "</ul>";
-    }
-    else if (currentQuestion.questionType === "TEXT")
-    {
-        console.log("---> Player Needs to Input Text");
-        htmlAnswers.innerHTML = "<form onsubmit='return false'>" + "<input id='textAnswer' type='text'>" + "<br/>" + "<br/>"  + "<button onclick='sendAnswers(\"" + SessionID + "\" , " + 'document.getElementById("textAnswer").value' + ") '> Submit </button>" + "</form>";
-    }
 }
 
 /* Skips the question the player is currently on if possible */
@@ -432,6 +480,8 @@ async function sendAnswers(SessionID, CurrentAnswer)
 /* Resets all HTML elements within Quiz Layout */
 function clearScreen()
 {
+    console.log("---> Clearing Screen");
+
     // Content Title
     htmlContentTitle.innerHTML = "";
 
@@ -443,6 +493,8 @@ function clearScreen()
 
     // Buttons
     htmlMiscButtons.innerHTML = "";
+
+    console.log("---> Cleared Screen");
 }
 
 /* Get player score from API */
@@ -525,7 +577,7 @@ async function sendLocation(position)
 /* Converts Milliseconds to Seconds*/
 function toSeconds(milliseconds)
 {
-    maxRemainingTime = currentRemainingTime = (milliseconds / 1000) / 300;
+    maxRemainingTime = currentRemainingTime = milliseconds / 1000;
 }
 
 /* Counts Down how long the player has to complete the quiz */
@@ -574,5 +626,92 @@ function timer()
 /* TODO - Allow player to use a QR Scanner for questions/text/etc. */
 function QRScanner(){}
 
-/* TODO - Check cookies to continue the session if available */
-function continueGame(){}
+/* Sets the date of the cookie to expire to 1 day */
+function setCookieExpiration()
+{
+    let today = new Date();
+    let day = String(today.getDate() + 1).padStart(2, '0');
+    let month = String(today.getMonth() + 1).padStart(2, '0');
+    let year = today.getFullYear();
+
+    today = day + "/" + month + "/" + year + "23:59:59 UTC";
+    //console.log(today);
+
+    return today;
+}
+
+/* Saves a value as a Cookie given a certain name and expiration time */
+function saveCookie(cookieName, cookieValue, expireDate)
+{
+    let tempDate = new Date();
+    tempDate.setTime(tempDate.getTime() + (expireDate * 60 * 60 * 1000));
+
+    let expiresOn = "expires=" + tempDate.toUTCString();
+
+    document.cookie = cookieName + "=" + cookieValue + ";" + expiresOn;
+
+}
+
+/* Retrieve a cookie by name from cookie array.     ---> Code from From: https://www.w3schools.com/js/js_cookies.asp */
+function getCookie(cname) {
+    let name = cname + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ca = decodedCookie.split(';');
+    for(let i = 0; i <ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+
+/* Check if cookies are stored of previous game to continue the session if available */
+async function continueGame()
+{
+    console.log("---> Continuing Quiz");
+
+    console.log("Fetch Sessions: ");
+    /*   Fetch All Available Treasure Hunt Sessions   */
+    const response = await fetch("https://codecyprus.org/th/api/list")
+        .then(response => response.json() /* Convert it from JSON */)
+        .then(json => {availableTH = json.treasureHunts /* Save in Variable Array */});
+
+    // ----------------------------------------------------------------------------------------------------
+
+    // Display Player Name & Initial Score
+    htmlPlayerName.innerText = "Player: " + getCookie("cPlayerName");
+    htmlPlayerScore.innerHTML = "<p id='pScore'> Score: " + playerScore + "</p>";
+
+    // Set Title to display name of Quiz currently being played, and show time remaining for it.
+    for(let n = 0; n < availableTH.length; n++)
+    {
+        if(availableTH[n].uuid === getCookie("cQuizID"))
+        {
+            htmlContentTitle.innerHTML = "<h1>" + availableTH[n].name + "</h1>";
+
+            if (availableTH[n].maxDuration)
+            {
+                //Convert Max-time to use for timer
+                toSeconds(availableTH[n].maxDuration);
+                // Update time remaining for player --- every 1sec
+                timerID = setInterval(timer, 1000);
+            }
+            else
+            {
+                console.log("No Max Time for this Quiz");
+            }
+        }
+        else
+        {
+            console.log("cQuizID does not Match any UUID: ");
+            console.log(getCookie("cQuizID"));
+            console.log(availableTH[n].uuid);
+        }
+    }
+
+    getQuestions(getCookie("cSessionID"))
+}

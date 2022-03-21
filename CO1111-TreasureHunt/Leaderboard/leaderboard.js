@@ -7,6 +7,7 @@ let availableTH;
 const htmlContentTitle = document.getElementById("ContentTitle");
 const htmlListOfQuizzes = document.getElementById("ListOfQuizzes");
 const htmlLeaderboardContainer = document.getElementById("leaderboardContainer");
+let tableInner = "";
 
 
 /*
@@ -20,20 +21,17 @@ function initialize()
     console.log("Initializing Page")
 
     // Get SessionID from Quiz page, passed along in URL
-    let parameters = new URLSearchParams( window.location.search );
-    let sessionID = parameters.get( "sessionID" );
+    let sessionID = null;
 
     fetchLeaderboard(sessionID);
 }
 
 /* Request All Player Scores of Provided Treasure Hunt */
-/* TODO - Doenst get Name of Quiz Selected, doesnt load fetched list into page */
-async function fetchLeaderboard(sessionID)
+async function fetchLeaderboard(QuizID)
 {
 
-
     /*   Fetch Player Scores    */
-    if(sessionID !== null)
+    if(QuizID !== null)
     {
         clearScreen();
 
@@ -41,7 +39,7 @@ async function fetchLeaderboard(sessionID)
 
         console.log("Fetching Leaderboard");
 
-        const response = await fetch("https://codecyprus.org/th/api/leaderboard?treasure-hunt-id=" + sessionID + "&sorted=true&limit=25")
+        const response = await fetch("https://codecyprus.org/th/api/leaderboard?treasure-hunt-id=" + QuizID + "&sorted=true&limit=25")
             .then(response => response.json() /* Convert it from JSON */)
             .then(json => {leaderboardResponse = json /* Save in Variable Array */});
 
@@ -54,55 +52,60 @@ async function fetchLeaderboard(sessionID)
 
             // Debug
             console.log(leaderboardList);
-            console.log(htmlLeaderboardContainer);
+
+
+            // ------------------------------------------------------------------------------------------
+
+            /*   Fetch All Available Treasure Hunt Sessions   */
+            const response = await fetch("https://codecyprus.org/th/api/list")
+                .then(response => response.json() /* Convert it from JSON */)
+                .then(json => {availableTH = json.treasureHunts /* Save in Variable Array */});
+
+            // ------------------------------------------------------------------------------------------
+
 
             // Update Title
             // TODO: TH.uuid is undefined
             for(let s = 0; s < availableTH.length; s++)
             {
-                if(availableTH.uuid === sessionID)
+                if(availableTH[s].uuid === QuizID)
                 {
                     htmlContentTitle.innerHTML = "<h1> Leaderboard for: " + availableTH[s].name + "</h1>";
-                }
-                else
-                {
-                    htmlContentTitle.innerHTML = "<h1> Leaderboard for name unavailable</h1>";
                 }
             }
 
 
             // Create Column Titles
-            // TODO: Doesnt work, for some reason doesnt populate <table> in page
-            htmlLeaderboardContainer.innerHTMl +=
+            tableInner =
                 "<tr>" +
-                "<th>Player</th>" + "<th>Score</th>" + "<th>Completion Time</th>" +
+                    "<th>Player</th>" + "<th>Score</th>" + "<th>Completion Time</th>" +
                 "</tr>";
 
             // Create Leaderboard Entries
             for(let s = 0; s < leaderboardList.length; s++)
             {
-                htmlLeaderboardContainer.innerHTMl +=
+                tableInner +=
                     "<tr>" +
-                    "<td>" + leaderboardList[s].player + "</td>" +
-                    "<td>" + leaderboardList[s].score + "</td>" +
-                    "<td>" + leaderboardList[s].completionTime + "</td>" +
+                        "<td>" + leaderboardList[s].player + "</td>" +
+                        "<td>" + leaderboardList[s].score + "</td>" +
+                        "<td>" + MiltoMin(leaderboardList[s].completionTime) + " /min" + "</td>" +
                     "</tr>";
             }
+
+            // Insert Rows into Table
+            htmlLeaderboardContainer.innerHTML = tableInner;
         }
         else
         {
             alert("Requested leaderboard of Unknown Session!");
         }
-        console.log(htmlLeaderboardContainer);
     }
-
     //Assume no reference to any Treasure Hunts exits
     else
     {
         // Show player all available THs to select one of which they would like to see the scoreboard
         fetchSessions();
     }
-
 }
 
 /* Requests a list of available sessions from the API */
@@ -182,4 +185,13 @@ function clearScreen()
     htmlContentTitle.innerHTML = "";
     htmlListOfQuizzes.innerHTML = "";
     htmlLeaderboardContainer.innerHTML = "";
+}
+
+/* Converts Milliseconds to Minutes */
+function MiltoMin(milliseconds)
+{
+    let seconds = milliseconds / 1000;
+    let minutes = seconds / 60;
+
+    return minutes;
 }
