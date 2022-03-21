@@ -9,6 +9,8 @@
 let availableTH = []; //Array of available sessions
 let currentQuizName;
 let currentSession;
+let maxRemainingTime;
+let currentRemainingTime;
 let numOfQuestions;
 let currentQuestion;
 let answerLetters = ['A', 'B', 'C', 'D'];
@@ -16,11 +18,13 @@ let answerIDs = ['answerA', 'answerB' , 'answerC' , 'answerD'];
 let playerScore = 0;
 let cSessionID;
 let cPlayerName;
+let timerID;
 const appName = "2022Team1";
 
 /* Global HTML variables */
 const htmlPlayerName = document.getElementById("PlayerName");
 const htmlPlayerScore = document.getElementById("PlayerScore");
+const htmlRemainingTime = document.getElementById("RemainingTime");
 const htmlContentTitle = document.getElementById("ContentTitle");
 const htmlLoadingIndicator = document.getElementById("LoadingIndicator");
 const htmlListOfQuizzes = document.getElementById("ListOfQuizzes");
@@ -50,9 +54,9 @@ function initialize()
     // Log for Debug
     console.log("Initializing Page")
 
-    // Update player location every 1min
+    // Update player location every 2min
     // (min interval allowed by API: 30sec)
-    setInterval(getLocation, 60000);
+    setInterval(getLocation, 120000);
 
     // Request currently available sessions
     fetchSessions();
@@ -205,9 +209,11 @@ async function startQuiz(QuizID, playerName) //name, id
         // Check Status for whether Error Messages exist
         if(currentSession.status === "OK")
         {
-            //Display Player Name & Initial Score
-            htmlPlayerName.innerText = "PLayer: " + playerName;
+            // Display Player Name & Initial Score
+            htmlPlayerName.innerText = "Player: " + playerName;
             htmlPlayerScore.innerHTML = "<p id='pScore'> Score: " + playerScore + "</p>";
+            // Create Countdown for quiz time remaining
+            //TODO - add timer to scene
 
             // Update Content Title to display name of Quiz currently being played
             for(let n = 0; n < availableTH.length; n++)
@@ -215,6 +221,18 @@ async function startQuiz(QuizID, playerName) //name, id
                 if(availableTH[n].uuid === QuizID)
                 {
                     htmlContentTitle.innerHTML = "<h1>" + availableTH[n].name + "</h1>";
+
+                    if (availableTH[n].maxDuration)
+                    {
+                        //Convert Max-time to use for timer
+                        toSeconds(availableTH[n].maxDuration);
+                        // Update time remaining for player --- every 1sec
+                        timerID = setInterval(timer, 1000);
+                    }
+                    else
+                    {
+                        alert("No Max Time for this Quiz");
+                    }
                 }
             }
 
@@ -358,8 +376,11 @@ async function SkipQuestion(SessionID)
 /* Retrieves all Answers of Current Questions based on Current Index and Provided Letter */
 async function sendAnswers(SessionID, CurrentAnswer)
 {
-    getLocation(SessionID);
-
+    // Request Location if Question Requires it
+    if(currentQuestion.requiresLocation === true)
+    {
+        getLocation(SessionID);
+    }
 
 
     console.log("---> Player Provided Answer:");
@@ -368,12 +389,12 @@ async function sendAnswers(SessionID, CurrentAnswer)
 
     let AnswerResult;
 
-
     /* Send Answer */
     const response = await fetch("https://codecyprus.org/th/api/answer?session=" + SessionID + "&answer=" + CurrentAnswer)
         .then(response => response.json() /* Convert it from JSON */)
         .then(json => {AnswerResult = json /* Save in Variable */});
 
+    // Question Answered Correctly
     if(AnswerResult.correct === true)
     {
         console.log("Question Answered Correctly!");
@@ -389,8 +410,6 @@ async function sendAnswers(SessionID, CurrentAnswer)
         // Finish Quiz - Redirect to Leaderboard
         else
         {
-            getScore(SessionID);
-
             alert("Congratulations You Finished The Quiz");
             window.location.href = "../Leaderboard/leaderboard.html";
         }
@@ -398,8 +417,6 @@ async function sendAnswers(SessionID, CurrentAnswer)
     else
     {
         getScore(SessionID);
-
-        alert("Question Not Answered Correctly!");
     }
 }
 
@@ -421,7 +438,7 @@ function clearScreen()
     // Content Title
     htmlContentTitle.innerHTML = "";
 
-    // Quiz Content
+    // Quiz Content - excluding player Info
     htmlLoadingIndicator.innerHTML = "";
     htmlListOfQuizzes.innerHTML = "";
     htmlQuestion.innerHTML = "";
@@ -444,7 +461,23 @@ async function getScore(SessionID)
     console.log("Player Score: " + scoreResult.score);
 
     // Update Score
-    document.getElementById("PlayerScore").innerText = "Score: " + scoreResult.score;
+    document.getElementById("PlayerScore").innerHTML = "<p>Score: " + "<i id='score'>" + scoreResult.score + "<i/>" + "</p>";
+
+    // If Score is positive
+    if(scoreResult.score > 0)
+    {
+        document.getElementById("score").style.color = "green";
+    }
+    // If Score is negative
+    else if(scoreResult.score < 0)
+    {
+        document.getElementById("score").style.color = "red";
+    }
+    // Score is zero
+    else
+    {
+        document.getElementById("score").style.color = "white";
+    }
 }
 
 /* Requests Players Location */
@@ -461,7 +494,7 @@ function getLocation(SessionID)
     }
     else
     {
-        alert("Geolocation is not supported by this browser.");
+        console.log("Geolocation is not supported by this browser.");
     }
 }
 
@@ -488,7 +521,61 @@ async function sendLocation(position)
     }
     else
     {
-        alert("Location NOT Updated!");
-        console.log(locationUpdateResult);
+        console.log("Location NOT Updated!");
     }
 }
+
+/* Converts Milliseconds to Seconds*/
+function toSeconds(milliseconds)
+{
+    maxRemainingTime = currentRemainingTime = milliseconds / 1000;
+}
+
+/* Counts Down how long the player has to complete the quiz */
+function timer()
+{
+    // Decrement
+    currentRemainingTime -= 1;
+
+    // Update Time in HTML - Time shown in minutes rounded down to avoid fractions
+    if(currentRemainingTime / 60 > 1)
+    {
+        htmlRemainingTime.innerHTML = "<p>Remaining Time: " + "<i id='time'>"  + Math.floor(currentRemainingTime/ 60) + "</i>" + "/min" + "<p/>";
+    }
+    // Time shown in seconds
+    else if(currentRemainingTime / 60 <= 1 && currentRemainingTime > 0)
+    {
+        htmlRemainingTime.innerHTML = "<p>Remaining Time: " + "<i id='time'>"  + currentRemainingTime + "</i>" + "/sec" + "<p/>";
+    }
+    // Out Of Time - Redirect to Leaderboard
+    else if(currentRemainingTime <= 0)
+    {
+        clearInterval(timerID);
+
+        alert("Out Of Time!");
+        window.location.href = "../Leaderboard/leaderboard.html";
+    }
+
+
+    // Half Time Remaining
+    if(currentRemainingTime < maxRemainingTime / 2)
+    {
+        document.getElementById("time").style.color = "orange";
+    }
+    // One Tenth of Time Remaining
+    else if(currentRemainingTime < maxRemainingTime / 10)
+    {
+        htmlRemainingTime.style.color = "red";
+    }
+    // More than Half Remaining
+    else
+    {
+        document.getElementById("time").style.color = "darkgreen";
+    }
+}
+
+/* TODO - Allow player to use a QR Scanner for questions/text/etc. */
+function QRScanner(){}
+
+/* TODO - Check cookies to continue the session if available */
+function continueGame(){}
