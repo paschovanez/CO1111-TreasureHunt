@@ -62,13 +62,18 @@ function initialize()
     setInterval(getLocation, 120000);
 
     // Check if player had previously launched a session
-    if(cSessionID === null || cPlayerName === null || cQuizID === null)
+    if(cSessionID.length === 0 || cPlayerName.length === 0 || cQuizID.length === 0)
     {
         // Request currently available sessions
         fetchSessions();
     }
     else
     {
+        // Cookies:
+        console.log(getCookie("cQuizID"));
+        console.log(getCookie("cSessionID"));
+        console.log(getCookie("cPlayerName"));
+
         // Ask if wants to continue?
         if(confirm("It appears that you have previously played a session." + "\n" + "\n" + "Would you like to continue?"))
         {
@@ -80,10 +85,12 @@ function initialize()
 
             clearScreen();
 
+            // Continue from last question answered
             continueGame();
         }
         else
         {
+            // Request currently available sessions
             fetchSessions();
         }
 
@@ -284,9 +291,19 @@ async function startQuiz(QuizID, playerName) //name, id
                 alert("The Name: " + "'" + playerName + "'" + " is already in use, please try another name.")
             }
             // Check if Missing param
-            else if(currentSession.errorMessages === "Missing or empty parameter: app"){}
+            else if(currentSession.errorMessages === "Missing or empty parameter: app")
+            {
+                alert("App Parameter Missing");
+            }
             // Check if  unknown treasure id
-            else if(currentSession.errorMessages === "Could not find a treasure hunt for the specified id:" + QuizID){}
+            else if(currentSession.errorMessages === "Could not find a treasure hunt for the specified id:" + QuizID)
+            {
+                alert("The Submitted Treasure Hunt ID could not be found");
+            }
+            else if(currentSession.errorMessages === "The specified treasure hunt is not active right now")
+            {
+                alert("The specified treasure hunt is not active right now." + "\n" + "Please Try Another One");
+            }
             // Uncaught exception
             else
             {
@@ -493,13 +510,13 @@ function clearScreen()
 
     // Buttons
     htmlMiscButtons.innerHTML = "";
-
-    console.log("---> Cleared Screen");
 }
 
 /* Get player score from API */
 async function getScore(SessionID)
 {
+    console.log("---> Getting Score");
+
     let scoreResult;
 
     /* Request Score */
@@ -643,6 +660,8 @@ function setCookieExpiration()
 /* Saves a value as a Cookie given a certain name and expiration time */
 function saveCookie(cookieName, cookieValue, expireDate)
 {
+    console.log("--->Saving Cookie");
+
     let tempDate = new Date();
     tempDate.setTime(tempDate.getTime() + (expireDate * 60 * 60 * 1000));
 
