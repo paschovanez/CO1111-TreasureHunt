@@ -61,8 +61,8 @@ function initialize()
     // (min interval allowed by API: 30sec)
     setInterval(getLocation, 120000);
 
-    // Check if player had previously launched a session
-    if(cSessionID.length === 0 || cPlayerName.length === 0 || cQuizID.length === 0)
+    // Check if player had previously launched and played a session
+    if(getCookie("cSessionID").length === 0 || getCookie("cPlayerName").length === 0 || getCookie("cQuizID").length === 0)
     {
         // Request currently available sessions
         fetchSessions();
