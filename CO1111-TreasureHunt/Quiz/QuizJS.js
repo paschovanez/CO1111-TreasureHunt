@@ -130,9 +130,6 @@ async function fetchSessions()
     {
         /* Create Items to populate list of Sessions with */
 
-        //Function Value of Button
-        currentQuizName = "\"" + availableTH[s].name.split(" ").join("") + "\"";
-
         // Session Element
         sessionListElements +=
             "<li>" +
@@ -528,7 +525,7 @@ async function sendLocation(position)
 /* Converts Milliseconds to Seconds*/
 function toSeconds(milliseconds)
 {
-    maxRemainingTime = currentRemainingTime = milliseconds / 1000;
+    maxRemainingTime = currentRemainingTime = (milliseconds / 1000) / 300;
 }
 
 /* Counts Down how long the player has to complete the quiz */
@@ -553,7 +550,7 @@ function timer()
         clearInterval(timerID);
 
         alert("Out Of Time!");
-        window.location.href = "../Leaderboard/leaderboard.html";
+        window.location.href = "../Leaderboard/leaderboard.html?sessionID=" + cSessionID;
     }
 
 
