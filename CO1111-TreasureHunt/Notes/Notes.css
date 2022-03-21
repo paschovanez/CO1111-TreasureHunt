@@ -1,0 +1,104 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    background-color:#FCAF45;
+    font-family: sans-serif;
+}
+
+.table-container{
+    padding: 0 8%;
+    margin: 30px auto 0;
+}
+
+.heading{
+    font-size: 40px;
+    text-align: center;
+    color: #f1f1f1;
+    margin-bottom: 40px;
+}
+
+.table{
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table thead{
+    background-color:#FF1046;
+}
+
+.table thead tr th{
+    font-size: 14px;
+    letter-spacing: 0.25px;
+    color: #FFFFFF;
+    opacity: 1;
+    font-weight: 600;
+    padding: 12px;
+    vertical-align: top;
+    border: 1px solid #dee2e685;
+}
+
+.table tbody tr td{
+    font-size: 14px;
+    letter-spacing: 0.25px;
+    font-weight: normal;
+    color: #f1f1f1;
+    background-color: #555555;
+    padding: 8px;
+    text-align: center;
+    border: 1px solid #dee2e685;
+}
+
+.table .text_open{
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: 0.25px;
+    color: #FF1046;
+}
+
+.table tbody tr td .btn{
+    width: 130px;
+    text-decoration: none;
+    line-height: 35px;
+    display: inline-block;
+    background-color: #FF1046;
+    /*font-weight: 400;*/
+    color: #FFFFFF;
+    text-align: center;
+    vertical-align: middle;
+    user-select: none;
+    border: 1px solid transparent;
+    font-size: 14px;
+    opacity: 1;
+}
+
+@media (max-width: 1000px){
+    .table thead{
+        display: none;
+    }
+    .table, .table tbody, .table tr, .table td{
+        display: block;
+        width: 100%;
+    }
+    .table tr{
+        margin-bottom: 20px;
+    }
+    .table tbody tr td{
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+    }
+    .table td:before{
+        content: attr(data-lable);
+        position: absolute;
+        left: 0;
+        width: 50%;
+        padding-left: 15px;
+        font-weight: 600;
+        font-size: 14px;
+        text-align: left;
+    }
+}

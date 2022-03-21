@@ -75,6 +75,7 @@ nav{
 /* Content */
 .content
 {
+    padding-top: 100px;
     /* Positioning */
     /*float: top;*/
     clear-side: both;
@@ -85,7 +86,7 @@ nav{
     margin: auto;
     padding: 8.5vw 2.0vw;
     /* Colors */
-    background-color: darkred;
+    background-color:darkred;
 }
 
 /* Members */
@@ -201,6 +202,10 @@ nav{
 }
 
  /*PLAY BUTTON */
+.center_play_directions{
+    text-align:center; font-size: 30px ;
+}
+
 .btn-play{
     padding: 20px 35px;
     font-size: 30px;
@@ -240,6 +245,13 @@ nav{
 
 
 /* TEAM section */
+.Team_section_members{
+    font-family: 'Brush Script MT',cursive;
+    text-align: center;
+    font-size: 50px;
+    margin-bottom: 22px;
+}
+
 @media screen and (max-width: 700px){
     .wrapper {
         position: relative;
@@ -322,10 +334,11 @@ nav{
     color: grey;
     text-align: center;
 }
-
+.avatar img{
+    width: 90px;
+    height: 90px;
+}
 .avatar{
-    /*width: 80px;*/
-    /*height: 80px;*/
     border-radius: 44%;
     position: absolute;
     top: -40px;
@@ -346,6 +359,7 @@ nav{
 
 #ft-social-MysideMedia a:hover {
     left: 0; /* hover with your mouse to make the media appear*/
+    text-align: justify;
 }
 
 .facebook {
@@ -379,9 +393,12 @@ nav{
     color: white;
     text-decoration: none;
 }
+.sideMedia i i{ /* i used the "i" letter to push the fa-icons one space to the left*/
+    color: transparent;/* hide the text */
+}
 
 .sideMedia {
-
+    text-align: end;
      position: sticky;
      position: fixed;
      bottom: 70%;
