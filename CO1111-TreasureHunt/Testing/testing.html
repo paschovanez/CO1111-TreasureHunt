@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <link rel="icon" type="image/x-icon" href="../images/favicon.ico"><!-- favicon -->
         <link rel="stylesheet" href="../Main.css" >
+        <link rel="stylesheet" href="testing.css" >
     </head>
 
     <body>
@@ -73,7 +74,7 @@
                     </p>
 
                     <!-- Types of Functionality Implemented/Tested -->
-                    <table>
+                    <table class="table-suc">
                         <tr>
                             <th>Functionality</th>
                             <th>Result</th>
@@ -127,7 +128,7 @@
                         <br/>
                     </p>
                     <!-- User Defined Request for Leaderboard Unit Test -->
-                    <form onsubmit="return false">
+                    <form class="testingForm" onsubmit="return false">
                         <p>
                             Specify how many players the Leaderboard should contain: <br/>
                             (Minimum = 1) <br/>
@@ -144,14 +145,14 @@
                             <input id="HasPrize" type="radio" name="PrizeType" value="true" required> <label for="HasPrize">Yes</label>
                             <input id="NoPrize" type="radio" name="PrizeType" value="false" required> <label for="NoPrize">No</label>
                         </p>
-                        <input type="submit" onclick="testLeaderboard()">Test Leaderboard</input>
+                        <input type="submit" onclick="testLeaderboard()" value="Test Leaderboard"></input>
                     </form>
 
                     <!-- Empty Placeholder Content for initialization for loading content -->
                     <h3>Leaderboard Unit Test</h3>
-                    <table id="leaderboardUnitTest"></table>
+                    <table class="LeaderboardStyles" id="leaderboardUnitTest"></table>
                     <h3>Actual Leaderboard:</h3>
-                    <table  id="leaderboardContainer"></table>
+                    <table class="LeaderboardStyles" id="leaderboardContainer"></table>
 
                 </div>
 
@@ -167,10 +168,10 @@
             <!-- Footer Social -->
             <section id="ft-social-MysideMedia">
                 <div class="sideMedia" > <!-- style="overflow-wrap: break-word;" -->
-                    <a href="https://www.facebook.com/profile.php?id=100078226507503" target="_blank" class="facebook"><i class="fa fa-facebook x"></i></a>
-                    <a href="https://twitter.com/CO1111_T1/" target="_blank" class="twitter"><i class="fa fa-twitter"></i></a>
-                    <a href="https://www.instagram.com/treasure_hunt_team1/" target="_blank" class="instagram"><i class="fa fa-instagram" style=""></i></a>
-                    <a href="https://www.youtube.com/channel/UCl_SKinQ_ndTxb94HenaoAA/featured" target="_blank" class="youtube"><i class="fa fa-youtube "></i></a>
+                    <a href="https://www.facebook.com/profile.php?id=100078226507503" target="_blank" class="facebook"><i class="fa fa-facebook x"><i>i</i></i></a>
+                    <a href="https://twitter.com/CO1111_T1/" target="_blank" class="twitter"><i class="fa fa-twitter"><i>i</i></i></a>
+                    <a href="https://www.instagram.com/treasure_hunt_team1/" target="_blank" class="instagram"><i class="fa fa-instagram" style=""><i>i</i></i></a>
+                    <a href="https://www.youtube.com/channel/UCl_SKinQ_ndTxb94HenaoAA/featured" target="_blank" class="youtube"><i class="fa fa-youtube "><i>i</i></i></a>
                 </div>
             </section>
 
