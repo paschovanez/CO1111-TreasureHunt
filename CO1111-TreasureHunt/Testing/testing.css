@@ -1,0 +1,51 @@
+main.content{
+    margin-top: 30px;
+}
+
+.PlayerScope{
+    margin-left: 28%;
+    margin-top: 24px;
+    padding: 10px;
+    font-size: 38px;
+    color: #FCAF45;
+}
+
+.testingForm{
+    margin: 2%;
+    padding: 10px;
+    background-color: #FCAF45;
+}
+input#PlayerScope{
+    text-align: center;
+    margin-left: 20%;
+    font-size: 20px;
+    background-color: white;
+    color: black;
+
+}
+
+input{
+    color: black;
+}
+
+.table-suc{
+    padding: 20px;
+    margin-left: 17%;
+    background: #FCAF45;
+}
+
+.table-suc th{
+    font-size: 20px;
+    padding-bottom: 20px;
+}
+
+.LeaderboardStyle{
+    padding: 20px;
+    margin-left: 17%;
+    background: #FCAF45;
+}
+.LeaderboardStyle td{
+    padding-right: 10px;
+   text-space: 20px;
+}
+

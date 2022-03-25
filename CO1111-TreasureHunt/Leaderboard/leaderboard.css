@@ -213,7 +213,7 @@ td,th{
 @media screen and (min-width: 912px){
 
     nav{
-        height: 8rem;
+        height: 6rem;
         width: 100vw;
         display: flex;
         position: fixed;
@@ -264,7 +264,7 @@ td,th{
     }
 
     .links li a{
-        font-size: 30px;
+        font-size: 20px;
     }
 }
 
