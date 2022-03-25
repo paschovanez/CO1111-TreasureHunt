@@ -5,11 +5,12 @@ async function testLeaderboard()
 {
     let leaderboardResponse;
     const htmlLeaderboardContainer = document.getElementById("leaderboardContainer");
+    const htmlLeaderboardUnitTest = document.getElementById("leaderboardUnitTest");
 
     let API_Request, sorted, prize;
 
     //Get Required Parameters from page
-    let amount = document.getElementById("PlayerScope").value;
+    let amount = parseInt(document.getElementById("PlayerScope").value);
     console.log(amount);
 
     let sortedTrue = document.getElementById("ListSorted").checked;
@@ -67,6 +68,95 @@ async function testLeaderboard()
 
                 if(leaderboardResponse.status === "OK")
                 {
+                    // "<td>" +  + "</td>" +
+
+                    console.log("Creating Unit Test");
+
+                    // Leaderboard Size
+                    unitTestInner =
+                        "<tr>" +
+                        "<th>Input Type</th>" + "<th>Recieved</th>" + "<th>Expected</th>" + "<th>Passed</th>" +
+                        "</tr>";
+                    unitTestInner +=
+                        "<tr>" +
+                        "<td> Size: </td>" + "<td>" + leaderboardResponse.numOfPlayers + "</td>" + "<td>" + amount + "</td>";
+                    if(leaderboardResponse.numOfPlayers === amount)
+                    {
+                        unitTestInner += "<td> True </td>" + "</tr>";
+                    }
+                    else
+                    {
+                        unitTestInner += "<td> False </td>" + "</tr>";
+                    }
+
+                    // Sorted
+                    if(sortedTrue === true)
+                    {
+                        unitTestInner +=
+                            "<tr>" +
+                            "<td> Sorted: </td>" + "<td>" + leaderboardResponse.sorted + "</td>" + "<td>" + sortedTrue + "</td>";
+                        if(leaderboardResponse.sorted === sortedTrue)
+                        {
+                            unitTestInner += "<td> True </td>"+ "</tr>";
+                        }
+                        else
+                        {
+                            nitTestInner += "<td> False </td>"+ "</tr>";
+                        }
+                    }
+                    else
+                    {
+                        unitTestInner +=
+                            "<tr>" +
+                            "<td> Sorted: </td>" + "<td>" + leaderboardResponse.sorted + "</td>" + "<td>" + !sortedFalse + "</td>";
+                        if(leaderboardResponse.sorted === !sortedFalse)
+                        {
+                            unitTestInner += "<td> True </td>"+ "</tr>";
+                        }
+                        else
+                        {
+                            nitTestInner += "<td> False </td>"+ "</tr>";
+                        }
+                    }
+
+                    // Prize
+                    if(prizeTrue === true)
+                    {
+                        unitTestInner +=
+                            "<tr>" +
+                            "<td> Prize: </td>" + "<td>" + leaderboardResponse.hasPrize + "</td>" + "<td>" + prizeTrue + "</td>";
+                        if(leaderboardResponse.hasPrize === prizeTrue)
+                        {
+                            unitTestInner += "<td> True </td>"+ "</tr>";
+                        }
+                        else
+                        {
+                            nitTestInner += "<td> False </td>"+ "</tr>";
+                        }
+                    }
+                    else
+                    {
+                        unitTestInner +=
+                            "<tr>" +
+                            "<td> Prize: </td>" + "<td>" + leaderboardResponse.hasPrize + "</td>" + "<td>" + !prizeFalse + "</td>";
+                        if(leaderboardResponse.hasPrize === !prizeFalse)
+                        {
+                            unitTestInner += "<td> True </td>"+ "</tr>";
+                        }
+                        else
+                        {
+                            nitTestInner += "<td> False </td>"+ "</tr>";
+                        }
+                    }
+
+                    // Add end of row
+                    //unitTestInner += "</tr>";
+
+                    //Insert Rows into Table
+                    htmlLeaderboardUnitTest.innerHTML = unitTestInner;
+
+                    // -----------------------------------------
+
                     console.log("Creating Leaderboard");
 
                     // Save list of Players
@@ -74,8 +164,6 @@ async function testLeaderboard()
 
                     // Debug
                     console.log(leaderboardList);
-
-                    // -----------------------------------------
 
                     // Create Column Titles
                     tableInner =
@@ -99,7 +187,7 @@ async function testLeaderboard()
                 }
                 else
                 {
-                    alert("Leaderboard Not Successful");
+                    alert("Leaderboard Retrieval Not Successful");
                 }
             }
         }
