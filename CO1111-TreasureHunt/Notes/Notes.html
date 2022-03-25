@@ -9,28 +9,8 @@
     <!-- loading the social media icons from  -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="icon" type="image/x-icon" href="../images/favicon.ico"><!-- favicon -->
-    <link rel="stylesheet" href="../Main.css" >
-
-    <style>
-        body{
-        }
-        table, th, td {
-            border: 1px solid;
-            text-align: center;
-            border-radius: 5px;
-        }
-        table{
-
-            padding: 30px;
-            background-color: white;
-            padding-top: 100px;
-
-        }
-        tr {
-            background-color: darkred;
-
-        }
-    </style>
+    <link rel="stylesheet" href="../Main.css">
+    <link rel="stylesheet" href="Notes.css">
 </head>
 
 <body>
@@ -51,219 +31,131 @@
         <li><a href="../Leaderboard/leaderboard.html">lEASERBOARD</a></li>
         <li><a href="../Quiz/Quiz.html">QUIZ</a></li>
         <li><a href="../Testing/testing.html">TEST</a></li>
-        <li><a href="../Notes/Notes.html">NOTES</a></li>
     </ul>
 </nav>
 
-
 <script>SOCIAL() </script>
-<!-- TEAM-WORK TABLE -->
-<h5>TEAM-WORK TABLE:</h5> <!-- nodes have internal styles in side the head-->
-<div style="overflow-x:auto;">
-    <table >
+
+<div class="table-container">
+    <h1 class="heading">Notes</h1>
+    <table class="table">
+        <thead>
         <tr>
-            <th>TASK ID</th>
-            <th>TASK MEMBERS</th>
-            <th>TASK DESCRIPTION</th>
-            <th>START DATE</th>
-            <th>END DATE</th>
-            <th>DURATION (IN DAYS)</th>
+            <th></th>
+            <th>Date/Time</th>
+            <th>Participants</th>
+            <th>Type</th>
+            <th>Tasks Completed</th>
+            <th>Tasks Discussed</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td data-lable=""><a class="btn">Meeting 1</a></td>
+            <td data-lable="Date/Time">14/1/2022 10-12 AM</td>
+            <td data-lable="Participants">Pascal Antony Constantina Christodoulou</td>
+            <td data-lable="Type">Class Meeting</td>
+            <td data-lable="Tasks Completed">Created the repository & email</td>
+            <td data-lable="Tasks Discussed"><span class="text_open">Github (Task management) </span></td>
+        </tr>
+
+        <tr>
+            <td data-lable=""><a class="btn">Meeting 2</a></td>
+            <td data-lable="Date/Time">31/1/2022 7:31-8:32 PM</td>
+            <td data-lable="Participants">Pascal Antony Constantina Christodoulou</td>
+            <td data-lable="Type">Teams call</td>
+            <td data-lable="Tasks Completed">Created all guthub acc.</td>
+            <td data-lable="Tasks Discussed"><span class="text_open">discussed ideas & took notes</span></td>
+        </tr>
+
+        <tr>
+            <td data-lable=""><a class="btn">Meeting 3</a></td>
+            <td data-lable="Date/Time">1/2/2022 4:08-5:21 PM</td>
+            <td data-lable="Participants">All Team</td>
+            <td data-lable="Type">Teams call</td>
+            <td data-lable="Tasks Completed">Social media(ac) Design(color) </td>
+            <td data-lable="Tasks Discussed"><span class="text_open">Discussed difficulty assigned tasks</span></td>
+        </tr>
+
+        <tr>
+            <td data-lable=""><a class="btn">Meeting 4</a></td>
+            <td data-lable="Date/Time">17/2/2022 12:59-1:15 PM</td>
+            <td data-lable="Participants">Pascal Antony Constantina Christodoulou</td>
+            <td data-lable="Type">Teams call</td>
+            <td data-lable="Tasks Completed">Navigation</td>
+            <td data-lable="Tasks Discussed"><span class="text_open">LAYOUT</span></td>
+        </tr>
+
+        <tr>
+            <td data-lable=""><a class="btn">Meeting 5</a></td>
+            <td data-lable="Date/Time">17/2/2022 2:52-5:13 PM</td>
+            <td data-lable="Participants">Stamatios Adamidis Constantina Christodoulou</td>
+            <td data-lable="Type">Teams call</td>
+            <td data-lable="Tasks Completed">social media posts & favion</td>
+            <td data-lable="Tasks Discussed"><span class="text_open">Social media nav</span></td>
+        </tr>
+
+        <tr>
+            <td data-lable=""><a class="btn">Meeting 6</a></td>
+            <td data-lable="Date/Time">17/2/2022 5:31-6:21 PM</td>
+            <td data-lable="Participants">All Team</td>
+            <td data-lable="Type">Teams call</td>
+            <td data-lable="Tasks Completed">file system & Team section</td>
+            <td data-lable="Tasks Discussed"><span class="text_open">Personalize team</span></td>
         </tr>
         <tr>
-            <td>T01</td>
-            <td>Pascal Antony</td>
-            <td> Create repository</td>
-            <td>14/1/2022</td>
-            <td>14/1/2022</td>
-            <td>1</td>
+            <td data-lable=""><a class="btn">Meeting 7</a></td>
+            <td data-lable="Date/Time">17/2/2022 9:34-10:15 PM</td>
+            <td data-lable="Participants">Pascal Antony Constantina Christodoulou</td>
+            <td data-lable="Type">Teams call</td>
+            <td data-lable="Tasks Completed">Created pages & fetch</td>
+            <td data-lable="Tasks Discussed"><span class="text_open">api display issues</span></td>
         </tr>
         <tr>
-            <td>T02</td>
-            <td>Pascal Antony
-                Christodoulou Constantina
-            </td>
-            <td>Idea Discussion</td>
-            <td>1/2/2022</td>
-            <td>1/2/2022</td>
-            <td>1</td>
+            <td data-lable=""><a class="btn">Meeting 8</a></td>
+            <td data-lable="Date/Time">18/2/2022 12:43-1:35, 4:25-5:15</td>
+            <td data-lable="Participants">Pascal Antony Constantina Christodoulou</td>
+            <td data-lable="Type">Teams call, Texted & Videos</td>
+            <td data-lable="Tasks Completed">social media nav & placeHolder Quiz</td>
+            <td data-lable="Tasks Discussed"><span class="text_open">Play button, Notes</span></td>
+        </tr>
+
+        <tr>
+            <td data-lable=""><a class="btn">Meeting 9</a></td>
+            <td data-lable="Date/Time">6/3/2022 7:09-7:29 pm</td>
+            <td data-lable="Participants">Pascal Antony Constantina Christodoulou</td>
+            <td data-lable="Type">Teams call</td>
+            <td data-lable="Tasks Completed">design(css) demo1</td>
+            <td data-lable="Tasks Discussed"><span class="text_open">demo2</span></td>
+        </tr>
+
+        <tr>
+            <td data-lable=""><a class="btn">Meeting 10</a></td>
+            <td data-lable="Date/Time">10/3/2022 12:19 - 12:44, 5:05 - 6:40</td>
+            <td data-lable="Participants">Pascal Antony Constantina Christodoulou</td>
+            <td data-lable="Type">Teams call</td>
+            <td data-lable="Tasks Completed">Instruction & Copyright</td>
+            <td data-lable="Tasks Discussed"><span class="text_open">Notes & Quiz</span></td>
         </tr>
         <tr>
-            <td>T03</td>
-            <td>Pascal Antony
-                Stamatios Adamidis
-            </td>
-            <td>Create social media accout</td>
-            <td>1/2/2022</td>
-            <td>15/2/2022</td>
-            <td>15</td>
+            <td data-lable=""><a class="btn">Meeting 11</a></td>
+            <td data-lable="Date/Time">18/3/2022 10-1 PM</td>
+            <td data-lable="Participants">Pascal Antony Constantina Christodoulou</td>
+            <td data-lable="Type">In Person</td>
+            <td data-lable="Tasks Completed">basic quiz functionality Geolocation</td>
+            <td data-lable="Tasks Discussed"><span class="text_open">Leaderboard loading issues, tutorialVideo</span></td>
         </tr>
         <tr>
-            <td>T04</td>
-            <td>Stamatios Adamidis Christodoulou Constantina
-            </td>
-            <td>Discussion & Task assigned</td>
-            <td>1/2/2022</td>
-            <td>1/2/2022</td>
-            <td>1</td>
+            <td data-lable=""><a class="btn">Meeting 12</a></td>
+            <td data-lable="Date/Time">21/3/2022 9:33-11:24</td>
+            <td data-lable="Participants">Pascal Antony Constantina Christodoulou</td>
+            <td data-lable="Type">Teams call</td>
+            <td data-lable="Tasks Completed">LeaderBoard,Notes,Quiz</td>
+            <td data-lable="Tasks Discussed"><span class="text_open">Testing & layout</span></td>
         </tr>
-        <tr>
-            <td>T05</td>
-            <td>ALL TEAM MEMBERS</td>
-            <td>Idea Discussion, task assigned & Design Color (chosen)
-            </td>
-            <td>1/2/2022</td>
-            <td>1/2/2022</td>
-            <td>1</td>
-        </tr>
-        <tr>
-            <td>T06</td>
-            <td>Christodoulou Constantina</td>
-            <td>Produce issues and task management (GitHub)</td>
-            <td>12/2/2022</td>
-            <td>14/2/2022</td>
-            <td>3</td>
-        </tr>
-        <tr>
-            <td>T07</td>
-            <td>Christodoulou Constantina</td>
-            <td>Navigation bar (HTML/CSS/JS)</td>
-            <td>12/2/2022</td>
-            <td>14/2/2022</td>
-            <td>3</td>
-        </tr>
-        <tr>
-            <td>T08</td>
-            <td>Christodoulou Constantina</td>
-            <td>Display of social media (HTML/CSS/JS)
-            </td>
-            <td>12/2/2022</td>
-            <td>14/2/2022</td>
-            <td>3</td>
-        </tr>
-        <tr>
-            <td>T09</td>
-            <td>Pascal Antony
-                Christodoulou Constantina</td>
-            <td>Changed repository to Private and send Invitations</td>
-            <td>13/2/2022</td>
-            <td>13/2/2022</td>
-            <td>1</td>
-        </tr>
-        <tr>
-            <td>T10</td>
-            <td>Christodoulou Constantina</td>
-            <td>Produce Gantt Chart</td>
-            <td>13/2/2022</td>
-            <td>17/2/2022</td>
-            <td>5</td>
-        </tr>
-        <tr>
-            <td>T11</td>
-            <td>ALL TEAM MEMBERS</td>
-            <td>Meeting Review</td>
-            <td>17/2/2022</td>
-            <td>17/2/2022</td>
-            <td>1</td>
-        </tr>
-        <tr>
-            <td>T12</td>
-            <td>Stamatios Adamidis
-                Christodoulou Constantina
-            </td>
-            <td>Meeting Promotion of the game using social media
-            </td>
-            <td>17/2/2022</td>
-            <td>17/2/2022</td>
-            <td>1</td>
-        </tr>
-        <tr>
-            <td>T13</td>
-            <td>Christodoulou Constantina
-            </td>
-            <td>Create social media</td>
-            <td>17/2/2022</td>
-            <td>17/2/2022</td>
-            <td>1</td>
-        </tr>
-        <tr style="background-color:#FCAF45">
-            <td></td>
-            <td>Stamatios Adamidis</td>
-            <td>AFTER THE MEETING </td>
-            <td>17/2/2022</td>
-            <td>ENTERED THE HOSPITAL</td>
-            <td>NO UPDATES</td>
-        </tr>
-        <tr>
-            <td>T14</td>
-            <td>Pascal Antony</td>
-            <td>70% FINISHED THE Quiz page</td>
-            <td>16/2/2022</td>
-            <td>18/2/2022</td>
-            <td>3</td>
-        </tr>
-        <tr>
-            <td>T15</td>
-            <td>Pascal Antony
-                Christodoulou Constantina
-            </td>
-            <td>Meeting about Quiz page</td>
-            <td>18/2/2022</td>
-            <td>18/2/2022</td>
-            <td>1</td>
-        </tr>
-        <tr>
-            <td>T16</td>
-            <td>Pascal Antony
-                Christodoulou Constantina
-            </td>
-            <td>Small demo(day)</td>
-            <td>18/2/2022</td>
-            <td>18/2/2022</td>
-            <td>1</td>
-        </tr>
-        <tr>
-            <td>T17</td>
-            <td>Pascal Antony
-                Christodoulou Constantina
-            </td>
-            <td>Team meeting &
-                Preparation for Demo 2</td>
-            <td>6/3/2022</td>
-            <td>10/3/2022</td>
-            <td>5</td>
-        </tr>
-        <tr>
-            <td>T18</td>
-            <td>Christodoulou Constantina</td>
-            <td>BIG Updates on the design and layout</td>
-            <td>7/3/2022</td>
-            <td>10/3/2022</td>
-            <td>4</td>
-        </tr>
-        <tr>
-            <td>T19</td>
-            <td>Pascal Antony
-                Christodoulou Constantina</td>
-            <td>Team meeting</td>
-            <td>10/3/2022</td>
-            <td>10/3/2022</td>
-            <td>1</td>
-        </tr>
-        <tr>
-            <td>T20</td>
-            <td>Christodoulou Constantina</td>
-            <td>Updated Gantt Chart & notes table</td>
-            <td>11/3/2022</td>
-            <td>11/3/2022</td>
-            <td>1</td>
-        <tr>
-            <td>T21</td>
-            <td>Christodoulou Constantina</td>
-            <td>Small demo 2
-                (day)</td>
-            <td>11/3/2022</td>
-            <td>11/3/2022</td>
-            <td>1</td>
+
+
+        </tbody>
     </table>
 </div>
 
@@ -272,19 +164,8 @@
 
 
 
-
 <!-- Top social media -->
 <footer>
-    <!-- Footer Social -->
-    <section id="ft-social-MysideMedia">
-        <div class="sideMedia" > <!-- style="overflow-wrap: break-word;" -->
-            <a href="https://www.facebook.com/profile.php?id=100078226507503" target="_blank" class="facebook"><i class="fa fa-facebook x"></i></a>
-            <a href="https://twitter.com/CO1111_T1/" target="_blank" class="twitter"><i class="fa fa-twitter"></i></a>
-            <a href="https://www.instagram.com/treasure_hunt_team1/" target="_blank" class="instagram"><i class="fa fa-instagram" style=""></i></a>
-            <a href="https://www.youtube.com/channel/UCl_SKinQ_ndTxb94HenaoAA/featured" target="_blank" class="youtube"><i class="fa fa-youtube "></i></a>
-        </div>
-    </section>
-
     <!-- Footer legal -->
     <section class="ft-legal">
         <ul class="ft-legal-list">
