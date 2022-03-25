@@ -78,7 +78,7 @@ async function fetchLeaderboard(QuizID)
             // Create Column Titles
             tableInner =
                 "<tr>" +
-                    "<th>Player</th>" + "<th>Score</th>" + "<th>Completion Time</th>" +
+                    "<th>Player</th>" + "<th>Score</th>" + "<th>Completion Time (h:m:s)</th>" +
                 "</tr>";
 
             // Create Leaderboard Entries
@@ -88,7 +88,7 @@ async function fetchLeaderboard(QuizID)
                     "<tr>" +
                         "<td>" + leaderboardList[s].player + "</td>" +
                         "<td>" + leaderboardList[s].score + "</td>" +
-                        "<td>" + MiltoMin(leaderboardList[s].completionTime) + " /min" + "</td>" +
+                        "<td>" + MiltoTime(leaderboardList[s].completionTime) + "</td>" +
                     "</tr>";
             }
 
@@ -187,11 +187,26 @@ function clearScreen()
     htmlLeaderboardContainer.innerHTML = "";
 }
 
-/* Converts Milliseconds to Minutes */
-function MiltoMin(milliseconds)
+/* Converts Milliseconds to Time of day */
+function MiltoTime(milliseconds)
 {
-    let seconds = milliseconds / 1000;
-    let minutes = seconds / 60;
+    let time = milliseconds;
 
-    return minutes;
+    // --- Convert Time ---
+    // Milliseconds
+    var mil = time % 1000;
+    time = (time - mil) / 1000;
+    // Seconds
+    var secs = time % 60;
+    time = (time - secs) / 60;
+    // Minutes
+    var mins = time % 60;
+    // Hours
+    var hrs = (time - mins) / 60;
+
+    // --- Save ---
+    // Final Time returned as single object for printing
+    time = hrs + ':' + mins + ':' + secs;
+
+    return time;
 }

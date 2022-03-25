@@ -1,70 +1,190 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <script src="../Main.js"></script>
-    <title>Treasure Hunt Web App</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <!-- loading the social media icons from  -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="icon" type="image/x-icon" href="../images/favicon.ico"><!-- favicon -->
-    <link rel="stylesheet" href="../Main.css" >
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <script src="../Main.js"></script>
+        <title>Treasure Hunt Web App</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <!-- loading the social media icons from  -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico"><!-- favicon -->
+        <link rel="stylesheet" href="../Main.css" >
+    </head>
 
-<body>
-<nav>
-    <div class="logo">
-        <a href="../index.html">
-            <img src="../images/favicon.png" alt="Logo Image">
-        </a>
-    </div>
+    <body>
+        <nav>
+            <div class="logo">
+                <a href="../index.html">
+                    <img src="../images/favicon.png" alt="Logo Image">
+                </a>
+            </div>
 
-    <div class="hamburger">
-        <div class="bars1"></div>
-        <div class="bars2"></div>
-        <div class="bars3"></div>
-    </div>
+            <div class="hamburger">
+                <div class="bars1"></div>
+                <div class="bars2"></div>
+                <div class="bars3"></div>
+            </div>
 
-    <ul class="links">
-        <li><a href="../Leaderboard/leaderboard.html">lEASERBOARD</a></li>
-        <li><a href="../Quiz/Quiz.html">QUIZ</a></li>
-        <li><a href="../Testing/testing.html">TEST</a></li>
-        <li><a href="../Notes/Notes.html">NOTES</a></li>
-    </ul>
-</nav>
-<script>SOCIAL() </script>
+            <ul class="links">
+                <li><a href="../Leaderboard/leaderboard.html">lEASERBOARD</a></li>
+                <li><a href="../Quiz/Quiz.html">QUIZ</a></li>
+                <li><a href="../Testing/testing.html">TEST</a></li>
+                <li><a href="../Notes/Notes.html">NOTES</a></li>
+            </ul>
+        </nav>
 
+        <main class="content">
+            <div>
+                <h1>Testing the APP</h1>
+                <div id="Intro">
+                    <h2>Overview:</h2>
+                    <p>
+                        The Web App was developed for an annual online quiz for the CodeCyprus Treasure Hunt performed at UClan Cyprus. <br/>
+                        The Quiz requires that the player can request, answer and skip questions if allowed, certain questions can only be answered if they are at a location provided to the API to be checked.<br/>
+                        <br/>
+                        The plan for testing this APP is to introduce methods to test the robustness of the features provided to the users.
+                    </p>
+                </div>
 
+                <div id="TestingPlan">
+                    <h2>Testing Methods: </h2>
+                    <p>
+                        The testing of the APP was, for the sake of limited time, done by the developers. <br/>
+                        This was done to find the main errors that could interfere with the functionality of the APP. <br/>
+                        This is mostly conducted by testing whilst working on the APP, therefore fixing any issues found on the fly. <br/>
+                        Due to this method there wasnt any documentation done on the issues found and how they were fixed. <br/>
+                        <br/>
+                        At the Same time A unit test was conducted to stress test the APP to ensure the expected result is achieved.<br/>
+                        <br/>
+                        The people involved in testing the APP where:
+                        <br/> <br/>
+                    </p>
+                    <ul style="list-style-type: disc">
+                        <li>Pascal Schovanez</li>
+                        <li>Constantina Christodoulou</li>
+                    </ul>
+                </div>
 
+                <div id="UnitTesting">
+                    <h2>Testing on the Fly:</h2>
+                    <p>
+                        Although no documentation could be done of this kind of testing, the functionality tested throughout the development of the APP was as follows: <br/>
+                    </p>
 
+                    <!-- Types of Functionality Implemented/Tested -->
+                    <table>
+                        <tr>
+                            <th>Functionality</th>
+                            <th>Result</th>
+                        </tr>
+                        <tr>
+                            <td>Getting a list of games</td>
+                            <td>Completed Successfully</td>
+                        </tr>
+                        <tr>
+                            <td>Starting a game</td>
+                            <td>Completed Successfully</td>
+                        </tr>
+                        <tr>
+                            <td>Getting a question</td>
+                            <td>Completed Successfully</td>
+                        </tr>
+                        <tr>
+                            <td>Sending correct answer</td>
+                            <td>Completed Successfully</td>
+                        </tr>
+                        <tr>
+                            <td>Sending wrong answer</td>
+                            <td>Completed Successfully</td>
+                        </tr>
+                        <tr>
+                            <td>Skipping a question</td>
+                            <td>Completed Successfully</td>
+                        </tr>
+                        <tr>
+                            <td>Getting/sending user location</td>
+                            <td>Completed Successfully</td>
+                        </tr>
+                        <tr>
+                            <td>Leaderboard</td>
+                            <td>Completed Successfully</td>
+                        </tr>
+                        <tr>
+                            <td>Saving/Retrieving Cookies</td>
+                            <td>Completed Successfully</td>
+                        </tr>
+                        <tr>
+                            <td>Resume game</td>
+                            <td>Completed Successfully</td>
+                        </tr>
+                    </table>
 
+                    <h2>Unit Testing:</h2>
+                    <p>
+                        To test the leaderboard a simple unit test that allows you to request a randomized list from the Testing-API. <br/>
+                        You can specify the parameters allowed by the API to define the type of list you want. <br/>
+                        <br/>
+                    </p>
+                    <!-- User Defined Request for Leaderboard Unit Test -->
+                    <form onsubmit="return false">
+                        <p>
+                            Specify how many players the Leaderboard should contain: <br/>
+                            (Minimum = 1) <br/>
+                            <input id="PlayerScope" type="number" min="1">
+                        </p>
+                        <p>
+                            Select whether the Leaderboard is sorted: <br/>
+                            <input id="ListSorted" type="radio" name="sortingType" value="true" required> <label for="ListSorted">Sorted</label>
+                            <input id="ListUnsorted" type="radio" name="sortingType" value="false" required> <label for="ListUnsorted">Unsorted</label>
+                        </p>
 
+                        <p>
+                            Select if the Treasure Hunt has a prize (won't be represented): <br/>
+                            <input id="HasPrize" type="radio" name="PrizeType" value="true" required> <label for="HasPrize">Yes</label>
+                            <input id="NoPrize" type="radio" name="PrizeType" value="false" required> <label for="NoPrize">No</label>
+                        </p>
+                        <input type="submit" onclick="testLeaderboard()">Test Leaderboard</input>
+                    </form>
 
+                    <!-- Empty Placeholder Content for initialization for loading content -->
+                    <h3>Leaderboard:</h3>
+                    <table  id="leaderboardContainer"></table>
 
+                </div>
 
-<!-- Top social media -->
-<footer>
-    <!-- Footer Social -->
-    <section id="ft-social-MysideMedia">
-        <div class="sideMedia" > <!-- style="overflow-wrap: break-word;" -->
-            <a href="https://www.facebook.com/profile.php?id=100078226507503" target="_blank" class="facebook"><i class="fa fa-facebook x"></i></a>
-            <a href="https://twitter.com/CO1111_T1/" target="_blank" class="twitter"><i class="fa fa-twitter"></i></a>
-            <a href="https://www.instagram.com/treasure_hunt_team1/" target="_blank" class="instagram"><i class="fa fa-instagram" style=""></i></a>
-            <a href="https://www.youtube.com/channel/UCl_SKinQ_ndTxb94HenaoAA/featured" target="_blank" class="youtube"><i class="fa fa-youtube "></i></a>
-        </div>
-    </section>
+                <div id="">
+                    <h2></h2>
+                </div>
 
-    <!-- Footer legal -->
-    <section class="ft-legal">
-        <ul class="ft-legal-list">
-            <li><a href="#">Terms &amp; Conditions</a></li>
-            <li><a href="#">Privacy Policy</a></li>
-            <li>&copy; 2022 Copyright Inc.</li>
-            <!--  <a href="#top">Back to top</a>  -->
-        </ul>
-    </section>
-</footer>
+            </div>
+        </main>
 
-</body>
+        <!-- Top social media -->
+        <footer>
+            <!-- Footer Social -->
+            <section id="ft-social-MysideMedia">
+                <div class="sideMedia" > <!-- style="overflow-wrap: break-word;" -->
+                    <a href="https://www.facebook.com/profile.php?id=100078226507503" target="_blank" class="facebook"><i class="fa fa-facebook x"></i></a>
+                    <a href="https://twitter.com/CO1111_T1/" target="_blank" class="twitter"><i class="fa fa-twitter"></i></a>
+                    <a href="https://www.instagram.com/treasure_hunt_team1/" target="_blank" class="instagram"><i class="fa fa-instagram" style=""></i></a>
+                    <a href="https://www.youtube.com/channel/UCl_SKinQ_ndTxb94HenaoAA/featured" target="_blank" class="youtube"><i class="fa fa-youtube "></i></a>
+                </div>
+            </section>
+
+            <!-- Footer legal -->
+            <section class="ft-legal">
+                <ul class="ft-legal-list">
+                    <li><a href="#">Terms &amp; Conditions</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li>&copy; 2022 Copyright Inc.</li>
+                    <!--  <a href="#top">Back to top</a>  -->
+                </ul>
+            </section>
+        </footer>
+
+    </body>
+
+    <script>SOCIAL() </script>
+    <script src="testing.js"></script>
 </html>
