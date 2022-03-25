@@ -39,12 +39,12 @@ input{
     padding-bottom: 20px;
 }
 
-.LeaderboardStyle{
+.LeaderboardStyles{
     padding: 20px;
     margin-left: 17%;
     background: #FCAF45;
 }
-.LeaderboardStyle td{
+.LeaderboardStyles td{
     padding-right: 10px;
    text-space: 20px;
 }
