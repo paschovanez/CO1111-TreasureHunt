@@ -22,6 +22,7 @@ const appName = "2022Team1";
 let cQuizID;
 let cSessionID;
 let cPlayerName;
+let cRemainingTime;
 let timerID;
 
 /* Global HTML variables */
@@ -575,9 +576,11 @@ async function sendLocation(position)
     console.log("---> Submitting Location");
 
     /* Send Location */
-    const response = await fetch("https://codecyprus.org/th/api/location?session=" + cSessionID + "&latitude=" + position.coords.latitude + "&longitude=" + position.coords.longitude    )
+    const response = await fetch("https://codecyprus.org/th/api/location?session=" + getCookie("cSessionID") + "&latitude=" + position.coords.latitude + "&longitude=" + position.coords.longitude    )
         .then(response => response.json() /* Convert it from JSON */)
         .then(json => {locationUpdateResult = json /* Save in Variable */});
+
+    console.log(cSessionID);
 
 
     /* Check Response from API */
@@ -603,15 +606,18 @@ function timer()
     // Decrement
     currentRemainingTime -= 1;
 
+    // Save updated Time to cookie
+    saveCookie("cRemainingTime", currentRemainingTime, 300000);
+
     // Update Time in HTML - Time shown in minutes rounded down to avoid fractions
     if(currentRemainingTime / 60 > 1)
     {
-        htmlRemainingTime.innerHTML = "<p>Remaining Time: " + "<i id='time'>"  + Math.floor(currentRemainingTime/ 60) + "</i>" + "/min" + "<p/>";
+        htmlRemainingTime.innerHTML = "<p>Remaining Time: " + "<i id='time'>"  + Math.floor(getCookie("cRemainingTime")/ 60) + "</i>" + "/min" + "<p/>";
     }
     // Time shown in seconds
     else if(currentRemainingTime / 60 <= 1 && currentRemainingTime > 0)
     {
-        htmlRemainingTime.innerHTML = "<p>Remaining Time: " + "<i id='time'>"  + currentRemainingTime + "</i>" + "/sec" + "<p/>";
+        htmlRemainingTime.innerHTML = "<p>Remaining Time: " + "<i id='time'>"  + getCookie("cRemainingTime") + "</i>" + "/sec" + "<p/>";
     }
     // Out Of Time - Redirect to Leaderboard
     else if(currentRemainingTime <= 0)
@@ -619,7 +625,7 @@ function timer()
         clearInterval(timerID);
 
         alert("Out Of Time!");
-        window.location.href = "../Leaderboard/leaderboard.html?sessionID=" + cSessionID;
+        window.location.href = "../Leaderboard/leaderboard.html?sessionID=" + getCookie("cSessionID");
     }
 
 
@@ -701,6 +707,9 @@ async function continueGame()
 
     // ----------------------------------------------------------------------------------------------------
 
+    // Retrieve Last Current Player Score
+    getScore(getCookie("cSessionID"));
+
     // Display Player Name & Initial Score
     htmlPlayerName.innerText = "Player: " + getCookie("cPlayerName");
     htmlPlayerScore.innerHTML = "<p id='pScore'> Score: " + playerScore + "</p>";
@@ -715,7 +724,7 @@ async function continueGame()
             if (availableTH[n].maxDuration)
             {
                 //Convert Max-time to use for timer
-                toSeconds(availableTH[n].maxDuration);
+                currentRemainingTime = getCookie("cRemainingTime");
                 // Update time remaining for player --- every 1sec
                 timerID = setInterval(timer, 1000);
             }
